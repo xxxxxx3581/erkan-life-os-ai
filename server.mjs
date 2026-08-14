@@ -1,20 +1,22 @@
 import "dotenv/config";
 import express from "express";
 import multer from "multer";
-import OpenAI from "openai";
+import { GoogleGenAI } from "@google/genai";
 import fs from "node:fs";
 import path from "node:path";
 
 const app = express();
 const port = process.env.PORT || 3000;
-const upload = multer({ dest: "tmp/", limits: { fileSize: 15 * 1024 * 1024 } });
+const upload = multer({
+  dest: "tmp/",
+  limits: { fileSize: 15 * 1024 * 1024 }
+});
 
-if (!process.env.OPENAI_API_KEY) {
-  console.warn("OPENAI_API_KEY bulunamadi. .env dosyasina eklemelisin.");
-}
+const genai = new GoogleGenAI({
+  apiKey: process.env.GEMINI_API_KEY
+});
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-const AI_MODEL = process.env.OPENAI_MODEL || "gpt-5";
+const AI_MODEL = process.env.GEMINI_MODEL || "gemini-3-flash-preview";
 
 app.use(express.json({ limit: "1mb" }));
 
@@ -23,26 +25,39 @@ Sen ERKAN LIFE OS'un kişisel dijital zekâsısın.
 Türkçe konuş. Kibar, doğal, kısa ama faydalı cevaplar ver.
 Kullanıcıya gereksiz uzun listeler verme.
 Görevleri önceliklendirirken uygulanabilir ve gerçekçi ol.
-Fikir Laboratuvarı isteklerinde: problem, hedef kullanıcı, çözüm, teknoloji,
-MVP/prototip ve sürdürülebilir gelir modeli başlıklarını düşün.
+Fikir Laboratuvarı isteklerinde problem, hedef kullanıcı, çözüm,
+teknoloji, MVP/prototip ve sürdürülebilir gelir modeli başlıklarını düşün.
 Finans, sağlık veya hukuk gibi yüksek riskli konularda kesin hüküm verme;
 gerektiğinde profesyonel destek öner.
 Kendini insan gibi tanıtma; bir yapay zekâ asistanı olduğunu gerektiğinde açıkça belirt.
 `;
 
 app.get("/api/health", (_req, res) => {
-  res.json({ ok: true, service: "ERKAN LIFE OS", ai: Boolean(process.env.OPENAI_API_KEY) });
+  res.json({
+    ok: true,
+    service: "ERKAN LIFE OS",
+    ai: Boolean(process.env.GEMINI_API_KEY)
+  });
 });
 
 app.post("/api/chat", async (req, res) => {
   try {
-    const { message, history = [], mode = "assistant" } = req.body || {};
-    if (!message?.trim()) return res.status(400).json({ error: "Mesaj boş olamaz." });
+    const {
+      message,
+      history = [],
+      mode = "assistant"
+    } = req.body || {};
+
+    if (!message?.trim()) {
+      return res.status(400).json({
+        error: "Mesaj boş olamaz."
+      });
+    }
 
     const safeHistory = Array.isArray(history)
       ? history.slice(-12).map(x => ({
-          role: x.role === "assistant" ? "assistant" : "user",
-          content: String(x.content || "").slice(0, 4000)
+          role: x.role === "assistant" ? "model" : "user",
+          parts: [{ text: String(x.content || "").slice(0, 4000) }]
         }))
       : [];
 
@@ -53,66 +68,85 @@ app.post("/api/chat", async (req, res) => {
       future: "Gelecek teknolojileri ve olası senaryoları temkinli biçimde değerlendir."
     }[mode] || "Genel kişisel asistan gibi yardımcı ol.";
 
-    const response = await openai.responses.create({
+    const contents = [
+      ...safeHistory,
+      {
+        role: "user",
+        parts: [{
+          text: message.trim()
+        }]
+      }
+    ];
+
+    const response = await genai.models.generateContent({
       model: AI_MODEL,
-      reasoning: { effort: "medium" },
-      instructions: developer + "\nMod: " + modeHint,
-      input: [...safeHistory, { role: "user", content: message.trim() }],
-      max_output_tokens: 700
+      contents,
+      config: {
+        systemInstruction: developer + "\nMod: " + modeHint,
+        temperature: 0.7,
+        maxOutputTokens: 700
+      }
     });
 
-    res.json({ text: response.output_text || "Yanıt üretilemedi.", responseId: response.id });
+    const text = response.text || "Yanıt üretilemedi.";
+
+    res.json({
+      text,
+      responseId: response.responseId || null
+    });
+
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "AI bağlantısında bir sorun oluştu." });
+    console.error("Gemini chat error:", err);
+
+    res.status(500).json({
+      error: "AI bağlantısında bir sorun oluştu."
+    });
   }
 });
 
-app.post("/api/speech", async (req, res) => {
-  try {
-    const { text } = req.body || {};
-    if (!text?.trim()) return res.status(400).json({ error: "Ses metni boş olamaz." });
+/*
+ * Şimdilik ses bölümlerini Gemini'ye çevirmiyoruz.
+ * Önce yazılı AI bağlantısını çalıştırıyoruz.
+ * Böylece hatanın nereden geldiğini net olarak görebiliriz.
+ */
 
-    const audio = await openai.audio.speech.create({
-      model: "gpt-4o-mini-tts",
-      voice: "marin",
-      input: text.trim().slice(0, 4096),
-      instructions: "Türkçe konuş. Kibar, sıcak, doğal, akıcı ve hafif enerjik bir erkek anlatıcı gibi konuş. Çok yavaşlama; cümleler arasında kısa ve doğal duraklar bırak.",
-      speed: 1.12,
-      response_format: "mp3"
-    });
-
-    const buffer = Buffer.from(await audio.arrayBuffer());
-    res.setHeader("Content-Type", "audio/mpeg");
-    res.send(buffer);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Ses üretilemedi." });
-  }
+app.post("/api/speech", async (_req, res) => {
+  res.status(501).json({
+    error: "Ses özelliği bir sonraki aşamada etkinleştirilecek."
+  });
 });
 
 app.post("/api/transcribe", upload.single("audio"), async (req, res) => {
   let filePath;
+
   try {
-    if (!req.file) return res.status(400).json({ error: "Ses dosyası gelmedi." });
+    if (!req.file) {
+      return res.status(400).json({
+        error: "Ses dosyası gelmedi."
+      });
+    }
+
     filePath = req.file.path;
 
-    const transcription = await openai.audio.transcriptions.create({
-      file: fs.createReadStream(filePath),
-      model: "gpt-4o-transcribe",
-      language: "tr"
+    return res.status(501).json({
+      error: "Mikrofon özelliği bir sonraki aşamada etkinleştirilecek."
     });
 
-    res.json({ text: transcription.text || "" });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Ses çözümlenemedi." });
+    console.error("Transcription error:", err);
+
+    res.status(500).json({
+      error: "Ses çözümlenemedi."
+    });
+
   } finally {
-    if (filePath) fs.promises.unlink(filePath).catch(() => {});
+    if (filePath) {
+      fs.promises.unlink(filePath).catch(() => {});
+    }
   }
 });
 
- app.get("/{*splat}", (_req, res) => {
+app.get("/{*splat}", (_req, res) => {
   res.sendFile(path.resolve("index.html"));
 });
 
