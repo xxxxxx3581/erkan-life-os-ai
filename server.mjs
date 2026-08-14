@@ -17,7 +17,6 @@ const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 const AI_MODEL = process.env.OPENAI_MODEL || "gpt-5";
 
 app.use(express.json({ limit: "1mb" }));
-app.use(express.static("public"));
 
 const developer = `
 Sen ERKAN LIFE OS'un kişisel dijital zekâsısın.
@@ -113,8 +112,8 @@ app.post("/api/transcribe", upload.single("audio"), async (req, res) => {
   }
 });
 
-app.get("/{*splat}", (_req, res) => {
-  res.sendFile(path.resolve("public/index.html"));
+app.get("/*splat", (_req, res) => {
+  res.sendFile(path.resolve("index.html"));
 });
 
 app.listen(port, () => {
