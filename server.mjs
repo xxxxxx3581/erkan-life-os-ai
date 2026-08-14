@@ -112,7 +112,7 @@ app.post("/api/transcribe", upload.single("audio"), async (req, res) => {
   }
 });
 
-app.get("/*splat", (_req, res) => {
+app.get("/{*splat}, (_req, res) => {
   res.sendFile(path.resolve("index.html"));
 });
 
