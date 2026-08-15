@@ -8,7 +8,6 @@
 
 <style>
 *{box-sizing:border-box}
-
 html,body{
   margin:0;
   height:100%;
@@ -16,10 +15,7 @@ html,body{
   color:#f5f8fb;
   font-family:Inter,Arial,sans-serif
 }
-
-body{
-  overflow:hidden
-}
+body{overflow:hidden}
 
 :root{
   --c:#20dcff;
@@ -113,14 +109,8 @@ main{
 }
 
 @keyframes in{
-  from{
-    opacity:0;
-    transform:translateY(12px)
-  }
-  to{
-    opacity:1;
-    transform:none
-  }
+  from{opacity:0;transform:translateY(12px)}
+  to{opacity:1;transform:none}
 }
 
 .k{
@@ -219,11 +209,6 @@ h1 span{
   outline:none
 }
 
-.input:focus{
-  border-color:#20dcff55;
-  box-shadow:0 0 15px #20dcff0d
-}
-
 .btn{
   border:0;
   border-radius:12px;
@@ -231,18 +216,13 @@ h1 span{
   font-size:7px;
   font-weight:800;
   background:linear-gradient(90deg,var(--c),var(--v));
-  color:#031018;
-  cursor:pointer
+  color:#031018
 }
 
 .btn.alt{
   background:#ffffff08;
   color:#c6d0d9;
   border:1px solid var(--line)
-}
-
-.btn:active{
-  transform:scale(.96)
 }
 
 .back{
@@ -283,16 +263,6 @@ h1 span{
   align-self:flex-end;
   background:#12333e;
   color:#e9fbff
-}
-
-.typing{
-  opacity:.65;
-  animation:pulse 1s infinite
-}
-
-@keyframes pulse{
-  0%,100%{opacity:.35}
-  50%{opacity:1}
 }
 
 .task{
@@ -347,31 +317,6 @@ h1 span{
   margin-top:5px
 }
 
-.timeline{
-  display:flex;
-  gap:8px;
-  overflow:auto;
-  padding:5px 0 10px
-}
-
-.year{
-  min-width:105px;
-  border:1px solid var(--line);
-  border-radius:15px;
-  padding:12px;
-  background:#ffffff05
-}
-
-.year b{
-  font-size:14px
-}
-
-.year p{
-  font-size:7px;
-  color:#8191a3;
-  line-height:1.45
-}
-
 .bottom{
   position:fixed;
   z-index:10;
@@ -422,8 +367,7 @@ h1 span{
 .recording{
   box-shadow:
     0 0 0 3px #20dcff33,
-    0 0 30px #20dcff55;
-  color:#20dcff!important
+    0 0 30px #20dcff55
 }
 
 .speaking{
@@ -434,37 +378,6 @@ h1 span{
 
 .hidden{
   display:none!important
-}
-
-.voice-control{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-top:8px;
-  padding:8px 10px;
-  border:1px solid var(--line);
-  border-radius:12px;
-  background:#ffffff04
-}
-
-.voice-control span{
-  font-size:7px;
-  color:#8292a3
-}
-
-.toggle{
-  border:1px solid #20dcff44;
-  background:#0c1b24;
-  color:#20dcff;
-  border-radius:9px;
-  padding:6px 9px;
-  font-size:6px;
-  font-weight:800
-}
-
-.toggle.off{
-  color:#8292a3;
-  border-color:#ffffff18
 }
 
 @media(min-width:650px){
@@ -501,8 +414,6 @@ h1 span{
 </div>
 
 <main>
-
-<!-- ANA -->
 
 <section class="view active" id="home">
 
@@ -553,8 +464,6 @@ h1 span{
 </section>
 
 
-<!-- BUGÜN -->
-
 <section class="view" id="today">
 
   <button class="back" data-v="home">← ANA</button>
@@ -562,7 +471,7 @@ h1 span{
   <div class="k">BUGÜN</div>
 
   <h1>
-    Şimdi ne
+    Şimdi ne<br>
     <span>önemli?</span>
   </h1>
 
@@ -578,15 +487,11 @@ h1 span{
       id="task"
       placeholder="Yeni görev..."
     >
-    <button class="btn" id="add">
-      EKLE
-    </button>
+    <button class="btn" id="add">EKLE</button>
   </div>
 
 </section>
 
-
-<!-- AI -->
 
 <section class="view" id="ai">
 
@@ -600,8 +505,7 @@ h1 span{
   </h1>
 
   <p class="desc">
-    Metinle konuşabilir veya mikrofonla soru sorabilirsin.
-    AI cevabı otomatik olarak seslendirebilir.
+    Yazabilir, mikrofonla konuşabilir ve cevapları otomatik olarak dinleyebilirsin.
   </p>
 
   <div class="panel chat" id="chat">
@@ -613,21 +517,6 @@ h1 span{
 
   </div>
 
-  <div class="voice-control">
-
-    <span>
-      🔊 Otomatik sesli cevap
-    </span>
-
-    <button
-      class="toggle"
-      id="autoVoice"
-    >
-      AÇIK
-    </button>
-
-  </div>
-
   <div class="row">
 
     <input
@@ -636,26 +525,15 @@ h1 span{
       placeholder="Mesajını yaz..."
     >
 
-    <button
-      class="btn"
-      id="send"
-    >
+    <button class="btn" id="send">
       GÖNDER
     </button>
 
-    <button
-      class="btn alt"
-      id="mic"
-      title="Mikrofon"
-    >
+    <button class="btn alt" id="mic">
       🎙
     </button>
 
-    <button
-      class="btn alt"
-      id="listen"
-      title="Son cevabı dinle"
-    >
+    <button class="btn alt" id="listen">
       🔊
     </button>
 
@@ -664,17 +542,11 @@ h1 span{
 </section>
 
 
-<!-- FİKİR -->
-
 <section class="view" id="ideas">
 
-  <button class="back" data-v="home">
-    ← ANA
-  </button>
+  <button class="back" data-v="home">← ANA</button>
 
-  <div class="k">
-    FİKİR LABORATUVARI • AI
-  </div>
+  <div class="k">FİKİR LABORATUVARI • AI</div>
 
   <h1>
     Fikri yaz.
@@ -693,43 +565,30 @@ h1 span{
       placeholder="Örn. evlerde enerji tasarrufu sistemi"
     >
 
-    <button
-      class="btn"
-      id="analyze"
-    >
+    <button class="btn" id="analyze">
       ANALİZ
     </button>
 
   </div>
 
-  <div
-    class="flow"
-    id="flow"
-  ></div>
+  <div class="flow" id="flow"></div>
 
 </section>
 
 
-<!-- GELECEK -->
-
 <section class="view" id="future">
 
-  <button class="back" data-v="home">
-    ← ANA
-  </button>
+  <button class="back" data-v="home">← ANA</button>
 
-  <div class="k">
-    GELECEK RADARI
-  </div>
+  <div class="k">GELECEK RADARI</div>
 
   <h1>
-    Bugünden
+    Bugünden<br>
     <span>yarına bak.</span>
   </h1>
 
   <p class="desc">
-    AI ile belirli bir alanın olası gelişmelerini
-    sorgulayabileceğin keşif katmanı.
+    AI ile belirli bir alanın olası gelişmelerini sorgulayabileceğin keşif katmanı.
   </p>
 
   <div class="row">
@@ -740,19 +599,13 @@ h1 span{
       placeholder="Örn. yapay zekâ, enerji, robotik"
     >
 
-    <button
-      class="btn"
-      id="scan"
-    >
+    <button class="btn" id="scan">
       KEŞFET
     </button>
 
   </div>
 
-  <div
-    class="panel"
-    id="futureOut"
-  >
+  <div class="panel" id="futureOut">
     Bir alan yaz ve keşfet.
   </div>
 
@@ -763,38 +616,23 @@ h1 span{
 
 <nav class="bottom">
 
-  <button
-    class="nav on"
-    data-v="home"
-  >
+  <button class="nav on" data-v="home">
     ⌂ ANA
   </button>
 
-  <button
-    class="nav"
-    data-v="today"
-  >
+  <button class="nav" data-v="today">
     ◎ BUGÜN
   </button>
 
-  <button
-    class="nav"
-    data-v="ai"
-  >
+  <button class="nav" data-v="ai">
     ✦ AI
   </button>
 
-  <button
-    class="nav"
-    data-v="ideas"
-  >
+  <button class="nav" data-v="ideas">
     ◇ FİKİR
   </button>
 
-  <button
-    class="nav"
-    data-v="future"
-  >
+  <button class="nav" data-v="future">
     ⌁ GELECEK
   </button>
 
@@ -817,25 +655,23 @@ const nav =
 
 let current = "home";
 
+let history = [];
+
 function show(id){
 
-  views.forEach(v => {
-
+  views.forEach(v =>
     v.classList.toggle(
       "active",
       v.id === id
-    );
+    )
+  );
 
-  });
-
-  nav.forEach(n => {
-
+  nav.forEach(n =>
     n.classList.toggle(
       "on",
       n.dataset.v === id
-    );
-
-  });
+    )
+  );
 
   current = id;
 }
@@ -844,9 +680,8 @@ document
   .querySelectorAll("[data-v]")
   .forEach(x => {
 
-    x.onclick = () => {
+    x.onclick = () =>
       show(x.dataset.v);
-    };
 
   });
 
@@ -855,12 +690,16 @@ document
    STATUS
 ========================================================= */
 
-const statusEl =
-  document.getElementById("status");
+const setStatus = text => {
 
-function setStatus(text){
-  statusEl.textContent = text;
-}
+  const el =
+    document.getElementById("status");
+
+  if(el){
+    el.textContent = text;
+  }
+
+};
 
 
 /* =========================================================
@@ -904,66 +743,7 @@ async function api(
 
 
 /* =========================================================
-   CHAT HISTORY
-========================================================= */
-
-let conversationHistory = [];
-
-
-/* =========================================================
-   AUTOMATIC VOICE
-========================================================= */
-
-let autoVoiceEnabled = true;
-
-let currentAudio = null;
-
-const autoVoiceButton =
-  document.getElementById(
-    "autoVoice"
-  );
-
-
-function updateVoiceButton(){
-
-  if(autoVoiceEnabled){
-
-    autoVoiceButton.textContent =
-      "AÇIK";
-
-    autoVoiceButton.classList.remove(
-      "off"
-    );
-
-  }else{
-
-    autoVoiceButton.textContent =
-      "KAPALI";
-
-    autoVoiceButton.classList.add(
-      "off"
-    );
-
-  }
-
-}
-
-
-autoVoiceButton.onclick = () => {
-
-  autoVoiceEnabled =
-    !autoVoiceEnabled;
-
-  updateVoiceButton();
-
-};
-
-
-updateVoiceButton();
-
-
-/* =========================================================
-   AI CHAT
+   CHAT
 ========================================================= */
 
 async function ask(
@@ -971,53 +751,53 @@ async function ask(
   mode = "assistant"
 ){
 
-  setStatus(
-    "AI DÜŞÜNÜYOR"
-  );
+  setStatus("AI DÜŞÜNÜYOR");
 
-  const data =
-    await api(
-      "/api/chat",
+  try{
+
+    const data =
+      await api(
+        "/api/chat",
+        {
+          method:"POST",
+          body:JSON.stringify({
+            message:text,
+            history,
+            mode
+          })
+        }
+      );
+
+    const answer =
+      data.text ||
+      "Yanıt üretilemedi.";
+
+    history.push(
       {
-        method:"POST",
-
-        body:JSON.stringify({
-
-          message:text,
-
-          history:
-            conversationHistory,
-
-          mode
-
-        })
-
+        role:"user",
+        content:text
+      },
+      {
+        role:"assistant",
+        content:answer
       }
     );
 
+    history =
+      history.slice(-12);
 
-  conversationHistory.push(
-    {
-      role:"user",
-      content:text
-    },
-    {
-      role:"assistant",
-      content:data.text
-    }
-  );
+    setStatus("AI HAZIR");
 
+    return answer;
 
-  conversationHistory =
-    conversationHistory.slice(-12);
+  }catch(error){
 
+    setStatus(
+      "BAĞLANTI HATASI"
+    );
 
-  setStatus(
-    "AI HAZIR"
-  );
-
-
-  return data.text;
+    throw error;
+  }
 }
 
 
@@ -1051,191 +831,502 @@ function bubble(
   chat.scrollTop =
     chat.scrollHeight;
 
-  return b;
 }
 
 
 /* =========================================================
-   SPEECH
+   STREAMING AUDIO ENGINE
 ========================================================= */
 
-async function speakText(
-  text,
-  automatic = false
+let audioContext = null;
+
+let audioQueue = [];
+
+let audioPlaying = false;
+
+let nextAudioTime = 0;
+
+let audioLeftover =
+  new Uint8Array(0);
+
+
+/*
+ * AudioContext'i kullanıcı etkileşimi
+ * sonrasında oluşturuyoruz.
+ */
+
+function getAudioContext(){
+
+  if(!audioContext){
+
+    audioContext =
+      new (
+        window.AudioContext ||
+        window.webkitAudioContext
+      )();
+
+  }
+
+  return audioContext;
+}
+
+
+/*
+ * PCM byte -> Float32
+ */
+
+function pcmToFloat32(
+  bytes
 ){
 
-  if(!text || !text.trim()){
+  const view =
+    new DataView(
+      bytes.buffer,
+      bytes.byteOffset,
+      bytes.byteLength
+    );
+
+  const sampleCount =
+    Math.floor(
+      bytes.byteLength / 2
+    );
+
+  const output =
+    new Float32Array(
+      sampleCount
+    );
+
+  for(
+    let i = 0;
+    i < sampleCount;
+    i++
+  ){
+
+    const value =
+      view.getInt16(
+        i * 2,
+        true
+      );
+
+    output[i] =
+      Math.max(
+        -1,
+        Math.min(
+          1,
+          value / 32768
+        )
+      );
+
+  }
+
+  return output;
+}
+
+
+/*
+ * Streaming PCM parçalarını
+ * Web Audio API ile sıraya koyuyoruz.
+ */
+
+function playPCMChunk(
+  bytes
+){
+
+  const ctx =
+    getAudioContext();
+
+  if(
+    ctx.state ===
+    "suspended"
+  ){
+
+    ctx.resume();
+
+  }
+
+  /*
+   * PCM örnekleri 16-bit olduğu için
+   * tek byte kalmışsa sonraki chunk ile
+   * birleştiriyoruz.
+   */
+
+  if(
+    audioLeftover.length
+  ){
+
+    const merged =
+      new Uint8Array(
+        audioLeftover.length +
+        bytes.length
+      );
+
+    merged.set(
+      audioLeftover,
+      0
+    );
+
+    merged.set(
+      bytes,
+      audioLeftover.length
+    );
+
+    bytes =
+      merged;
+
+    audioLeftover =
+      new Uint8Array(0);
+
+  }
+
+  if(
+    bytes.length % 2 !== 0
+  ){
+
+    audioLeftover =
+      bytes.slice(
+        bytes.length - 1
+      );
+
+    bytes =
+      bytes.slice(
+        0,
+        bytes.length - 1
+      );
+
+  }
+
+  if(!bytes.length){
     return;
   }
 
-  try{
-
-    setStatus(
-      "SES HAZIRLANIYOR"
+  const samples =
+    pcmToFloat32(
+      bytes
     );
 
+  const buffer =
+    ctx.createBuffer(
+      1,
+      samples.length,
+      24000
+    );
 
-    if(currentAudio){
+  buffer
+    .getChannelData(0)
+    .set(samples);
 
-      try{
-        currentAudio.pause();
-      }catch(_){}
+  const source =
+    ctx.createBufferSource();
 
-      currentAudio = null;
+  source.buffer =
+    buffer;
+
+  source.connect(
+    ctx.destination
+  );
+
+  const now =
+    ctx.currentTime;
+
+  /*
+   * İlk chunk geldiğinde hemen başlat.
+   * Sonraki chunk'lar öncekinin sonuna
+   * bağlanır.
+   */
+
+  if(
+    nextAudioTime <
+    now + 0.03
+  ){
+
+    nextAudioTime =
+      now + 0.03;
+
+  }
+
+  source.start(
+    nextAudioTime
+  );
+
+  nextAudioTime +=
+    buffer.duration;
+
+  audioQueue.push(
+    source
+  );
+
+  source.onended = () => {
+
+    const index =
+      audioQueue.indexOf(
+        source
+      );
+
+    if(index !== -1){
+
+      audioQueue.splice(
+        index,
+        1
+      );
 
     }
 
+    if(
+      audioQueue.length === 0 &&
+      !audioPlaying
+    ){
+
+      document
+        .getElementById("listen")
+        ?.classList.remove(
+          "speaking"
+        );
+
+    }
+
+  };
+
+}
+
+
+/* =========================================================
+   STOP AUDIO
+========================================================= */
+
+function stopAudio(){
+
+  audioQueue.forEach(
+    source => {
+
+      try{
+        source.stop();
+      }catch(_){}
+
+    }
+  );
+
+  audioQueue = [];
+
+  audioPlaying = false;
+
+  audioLeftover =
+    new Uint8Array(0);
+
+  nextAudioTime = 0;
+
+  if(audioContext){
+
+    try{
+      audioContext.close();
+    }catch(_){}
+
+    audioContext =
+      null;
+
+  }
+
+}
+
+
+/* =========================================================
+   STREAM SPEECH
+========================================================= */
+
+async function speakText(
+  text
+){
+
+  if(!text){
+    return;
+  }
+
+  /*
+   * Önceki ses varsa durdur.
+   */
+
+  stopAudio();
+
+  const button =
+    document.getElementById(
+      "listen"
+    );
+
+  button?.classList.add(
+    "speaking"
+  );
+
+  audioPlaying = true;
+
+  setStatus(
+    "SES BAŞLATILIYOR"
+  );
+
+  try{
 
     const response =
       await fetch(
         "/api/speech",
         {
           method:"POST",
-
           headers:{
             "Content-Type":
               "application/json"
           },
-
-          body:
-            JSON.stringify({
-              text:
-                text
-                  .trim()
-                  .slice(0,4096)
-            })
+          body:JSON.stringify({
+            text
+          })
         }
       );
 
-
     if(!response.ok){
 
-      let errorText =
+      let message =
         "Ses üretilemedi.";
 
       try{
 
-        const errorData =
+        const error =
           await response.json();
 
-        errorText =
-          errorData.error ||
-          errorText;
+        message =
+          error.error ||
+          message;
 
       }catch(_){}
 
       throw new Error(
-        errorText
+        message
       );
 
     }
 
+    /*
+     * Stream okuyucusu.
+     */
 
-    const blob =
-      await response.blob();
+    const reader =
+      response.body?.getReader();
 
-
-    if(!blob.size){
+    if(!reader){
 
       throw new Error(
-        "Boş ses dosyası geldi."
+        "Ses akışı alınamadı."
       );
 
     }
 
+    const decoder =
+      new TextDecoder();
 
-    const url =
-      URL.createObjectURL(
-        blob
-      );
+    let firstAudio = true;
 
+    while(true){
 
-    const audio =
-      new Audio(url);
+      const {
+        done,
+        value
+      } =
+        await reader.read();
 
+      if(done){
+        break;
+      }
 
-    currentAudio =
-      audio;
+      if(!value){
+        continue;
+      }
 
+      /*
+       * İlk ses parçası geldiği anda
+       * kullanıcıya artık ses başladığını bildir.
+       */
 
-    audio.preload =
-      "auto";
+      if(firstAudio){
 
+        firstAudio = false;
 
-    audio.onplay = () => {
-
-      setStatus(
-        "KONUŞUYOR"
-      );
-
-    };
-
-
-    audio.onended = () => {
-
-      URL.revokeObjectURL(
-        url
-      );
-
-      if(
-        currentAudio === audio
-      ){
-
-        currentAudio =
-          null;
+        setStatus(
+          "AI KONUŞUYOR"
+        );
 
       }
 
-      setStatus(
-        "AI HAZIR"
+      playPCMChunk(
+        value
       );
 
-    };
+    }
 
+    /*
+     * Stream tamamen bittikten sonra
+     * kalan son tek byte varsa yok say.
+     */
 
-    audio.onerror = () => {
+    audioLeftover =
+      new Uint8Array(0);
 
-      URL.revokeObjectURL(
-        url
-      );
+    /*
+     * Ses kuyruğunun bitmesini bekle.
+     */
 
-      if(
-        currentAudio === audio
-      ){
+    const waitUntilFinished =
+      () =>
+        new Promise(resolve => {
 
-        currentAudio =
-          null;
+          const check =
+            () => {
 
-      }
+              if(
+                audioQueue.length === 0
+              ){
 
-      setStatus(
-        "SES HATASI"
-      );
+                resolve();
 
-    };
+              }else{
 
+                setTimeout(
+                  check,
+                  80
+                );
 
-    await audio.play();
+              }
+
+            };
+
+          check();
+
+        });
+
+    await waitUntilFinished();
+
+    audioPlaying = false;
+
+    button?.classList.remove(
+      "speaking"
+    );
+
+    setStatus(
+      "AI HAZIR"
+    );
 
   }catch(error){
 
-    console.error(
-      "Speech error:",
-      error
+    audioPlaying = false;
+
+    button?.classList.remove(
+      "speaking"
     );
 
     setStatus(
       "SES HATASI"
     );
 
-    if(!automatic){
+    console.error(
+      "Streaming TTS error:",
+      error
+    );
 
-      alert(
-        error.message ||
-        "Ses üretilemedi."
-      );
-
-    }
+    throw error;
 
   }
 
@@ -1243,123 +1334,72 @@ async function speakText(
 
 
 /* =========================================================
-   SEND BUTTON
+   SEND TEXT
 ========================================================= */
-
-async function sendMessage(){
-
-  const input =
-    document.getElementById(
-      "msg"
-    );
-
-  const text =
-    input.value.trim();
-
-
-  if(!text){
-    return;
-  }
-
-
-  input.value = "";
-
-
-  bubble(
-    text,
-    "me"
-  );
-
-
-  const typing =
-    bubble(
-      "AI düşünüyor...",
-      "ai typing"
-    );
-
-
-  try{
-
-    const answer =
-      await ask(
-        text
-      );
-
-
-    typing.remove();
-
-
-    bubble(
-      answer,
-      "ai"
-    );
-
-
-    /*
-     * EN ÖNEMLİ KISIM:
-     *
-     * AI cevabı gelir gelmez
-     * otomatik seslendirme.
-     */
-
-    if(
-      autoVoiceEnabled &&
-      answer
-    ){
-
-      await speakText(
-        answer,
-        true
-      );
-
-    }else{
-
-      setStatus(
-        "AI HAZIR"
-      );
-
-    }
-
-
-  }catch(error){
-
-    typing.remove();
-
-
-    bubble(
-      "Bağlantı kurulamadı: " +
-      error.message,
-      "ai"
-    );
-
-
-    setStatus(
-      "BAĞLANTI HATASI"
-    );
-
-  }
-
-}
-
 
 document
   .getElementById("send")
-  .onclick =
-  sendMessage;
+  .onclick = async () => {
 
+    const input =
+      document.getElementById(
+        "msg"
+      );
 
-document
-  .getElementById("msg")
-  .onkeydown =
-  event => {
+    const text =
+      input.value.trim();
 
-    if(
-      event.key === "Enter"
-    ){
+    if(!text){
+      return;
+    }
 
-      event.preventDefault();
+    input.value = "";
 
-      sendMessage();
+    bubble(
+      text,
+      "me"
+    );
+
+    try{
+
+      const answer =
+        await ask(text);
+
+      bubble(
+        answer,
+        "ai"
+      );
+
+      /*
+       * Cevap gelir gelmez otomatik seslendir.
+       */
+
+      try{
+
+        await speakText(
+          answer
+        );
+
+      }catch(error){
+
+        console.error(
+          "Otomatik ses hatası:",
+          error
+        );
+
+      }
+
+    }catch(error){
+
+      bubble(
+        "Bağlantı kurulamadı: " +
+        error.message,
+        "ai"
+      );
+
+      setStatus(
+        "BAĞLANTI HATASI"
+      );
 
     }
 
@@ -1367,13 +1407,35 @@ document
 
 
 /* =========================================================
-   MANUAL LISTEN
+   ENTER
+========================================================= */
+
+document
+  .getElementById("msg")
+  .onkeydown = event => {
+
+    if(
+      event.key === "Enter"
+    ){
+
+      document
+        .getElementById(
+          "send"
+        )
+        .click();
+
+    }
+
+  };
+
+
+/* =========================================================
+   MANUAL SPEAKER
 ========================================================= */
 
 document
   .getElementById("listen")
-  .onclick =
-  async () => {
+  .onclick = async () => {
 
     const bubbles =
       [
@@ -1387,22 +1449,23 @@ document
         bubbles.length - 1
       ];
 
-
     if(!last){
-
-      alert(
-        "Dinlenecek AI cevabı yok."
-      );
-
       return;
-
     }
 
+    try{
 
-    await speakText(
-      last.textContent,
-      false
-    );
+      await speakText(
+        last.textContent
+      );
+
+    }catch(error){
+
+      alert(
+        error.message
+      );
+
+    }
 
   };
 
@@ -1415,26 +1478,40 @@ let recorder = null;
 
 let chunks = [];
 
-let microphoneStream = null;
+let micStream = null;
 
 
-const micButton =
-  document.getElementById(
-    "mic"
-  );
+/*
+ * Maksimum kayıt süresi.
+ * Kullanıcı konuşmasını bitirirse
+ * butona tekrar basarak da durdurabilir.
+ */
+
+const MAX_RECORDING_MS =
+  12000;
 
 
-micButton.onclick =
-  async () => {
+/* =========================================================
+   START / STOP MICROPHONE
+========================================================= */
+
+document
+  .getElementById("mic")
+  .onclick = async () => {
+
+    const button =
+      document.getElementById(
+        "mic"
+      );
 
     /*
-     * Zaten kayıt yapıyorsak
-     * durdur.
+     * Zaten kayıt yapıyorsak durdur.
      */
 
     if(
       recorder &&
-      recorder.state === "recording"
+      recorder.state ===
+      "recording"
     ){
 
       recorder.stop();
@@ -1443,23 +1520,41 @@ micButton.onclick =
 
     }
 
-
     try{
 
-      microphoneStream =
+      /*
+       * AudioContext'i kullanıcı
+       * hareketi sırasında hazırla.
+       */
+
+      const ctx =
+        getAudioContext();
+
+      if(
+        ctx.state ===
+        "suspended"
+      ){
+
+        await ctx.resume();
+
+      }
+
+      micStream =
         await navigator
           .mediaDevices
           .getUserMedia({
-            audio:true
+            audio:{
+              channelCount:1,
+              echoCancellation:true,
+              noiseSuppression:true,
+              autoGainControl:true
+            }
           });
-
 
       chunks = [];
 
-
       let mimeType =
-        "";
-
+        "audio/webm";
 
       if(
         MediaRecorder.isTypeSupported(
@@ -1470,28 +1565,15 @@ micButton.onclick =
         mimeType =
           "audio/webm;codecs=opus";
 
-      }else if(
-        MediaRecorder.isTypeSupported(
-          "audio/webm"
-        )
-      ){
-
-        mimeType =
-          "audio/webm";
-
       }
 
-
       recorder =
-        mimeType
-          ? new MediaRecorder(
-              microphoneStream,
-              {mimeType}
-            )
-          : new MediaRecorder(
-              microphoneStream
-            );
-
+        new MediaRecorder(
+          micStream,
+          {
+            mimeType
+          }
+        );
 
       recorder.ondataavailable =
         event => {
@@ -1513,27 +1595,33 @@ micButton.onclick =
       recorder.onstop =
         async () => {
 
+          button.classList.remove(
+            "recording"
+          );
+
+          setStatus(
+            "SES ÇÖZÜMLENİYOR"
+          );
+
           try{
 
-            microphoneStream
-              ?.getTracks()
-              .forEach(
-                track =>
-                  track.stop()
-              );
+            if(
+              micStream
+            ){
 
+              micStream
+                .getTracks()
+                .forEach(
+                  track =>
+                    track.stop()
+                );
 
-            micButton.classList.remove(
-              "recording"
-            );
+              micStream =
+                null;
 
+            }
 
-            setStatus(
-              "SES ÇÖZÜMLENİYOR"
-            );
-
-
-            const audioBlob =
+            const blob =
               new Blob(
                 chunks,
                 {
@@ -1543,8 +1631,9 @@ micButton.onclick =
                 }
               );
 
-
-            if(!audioBlob.size){
+            if(
+              blob.size === 0
+            ){
 
               throw new Error(
                 "Ses kaydı boş."
@@ -1552,27 +1641,23 @@ micButton.onclick =
 
             }
 
-
-            const formData =
+            const form =
               new FormData();
 
-
-            formData.append(
+            form.append(
               "audio",
-              audioBlob,
+              blob,
               "voice.webm"
             );
-
 
             const response =
               await fetch(
                 "/api/transcribe",
                 {
                   method:"POST",
-                  body:formData
+                  body:form
                 }
               );
-
 
             const data =
               await response
@@ -1581,8 +1666,9 @@ micButton.onclick =
                   () => ({})
                 );
 
-
-            if(!response.ok){
+            if(
+              !response.ok
+            ){
 
               throw new Error(
                 data.error ||
@@ -1591,48 +1677,42 @@ micButton.onclick =
 
             }
 
-
-            /*
-             * Sunucudan gelen yazıyı
-             * mesaj kutusuna koy.
-             */
-
-            const messageInput =
-              document.getElementById(
-                "msg"
-              );
-
-
-            const transcript =
+            const text =
               String(
                 data.text ||
-                data.transcript ||
                 ""
               ).trim();
 
-
-            if(!transcript){
+            if(!text){
 
               throw new Error(
-                "Konuşma yazıya dönüştürülemedi."
+                "Konuşma algılanamadı."
               );
 
             }
 
-
-            messageInput.value =
-              transcript;
-
-
             /*
-             * EN ÖNEMLİ KISIM:
-             *
-             * Mikrofon -> yazı ->
-             * otomatik gönder.
+             * Önce algılanan konuşmayı
+             * mesaj kutusuna yaz.
              */
 
-            await sendMessage();
+            const input =
+              document.getElementById(
+                "msg"
+              );
 
+            input.value =
+              text;
+
+            /*
+             * Sonra otomatik gönder.
+             */
+
+            document
+              .getElementById(
+                "send"
+              )
+              .click();
 
           }catch(error){
 
@@ -1641,15 +1721,12 @@ micButton.onclick =
               error
             );
 
-
             setStatus(
-              "MİKROFON HATASI"
+              "SES HATASI"
             );
 
-
             alert(
-              error.message ||
-              "Ses çözümlenemedi."
+              error.message
             );
 
           }
@@ -1659,20 +1736,16 @@ micButton.onclick =
 
       recorder.start();
 
-
-      micButton.classList.add(
+      button.classList.add(
         "recording"
       );
-
 
       setStatus(
         "DİNLİYOR"
       );
 
-
       /*
-       * Güvenlik için maksimum
-       * 15 saniyelik kayıt.
+       * Maksimum 12 saniye.
        */
 
       setTimeout(
@@ -1689,22 +1762,19 @@ micButton.onclick =
           }
 
         },
-        15000
+        MAX_RECORDING_MS
       );
-
 
     }catch(error){
 
       console.error(
-        "Microphone permission:",
+        "Microphone permission error:",
         error
       );
-
 
       setStatus(
         "MİKROFON HATASI"
       );
-
 
       alert(
         "Mikrofon izni gerekli. " +
@@ -1721,63 +1791,55 @@ micButton.onclick =
 ========================================================= */
 
 const tasks = [
-
   [
-    "ERKAN LIFE OS V2'yi keşfet",
+    "ERKAN LIFE OS V2yi keşfet",
     false
   ],
-
   [
     "Bir yeni fikir analiz et",
     false
   ],
-
   [
     "Bugünün en önemli işini seç",
     false
   ]
-
 ];
 
 
 function renderTasks(){
 
-  document.getElementById(
-    "tasks"
-  ).innerHTML =
-    tasks
-      .map(
-        (task,index) => `
-          <div
-            class="task ${task[1] ? "done" : ""}"
-            data-i="${index}"
-          >
-
-            <button class="check">
-              ${task[1] ? "✓" : ""}
-            </button>
-
-            <span>
-              ${escapeHtml(task[0])}
-            </span>
-
-          </div>
-        `
-      )
-      .join("");
+  document
+    .getElementById("tasks")
+    .innerHTML =
+      tasks
+        .map(
+          (task,index) =>
+            `
+            <div
+              class="task ${task[1] ? "done" : ""}"
+              data-i="${index}"
+            >
+              <button class="check">
+                ${task[1] ? "✓" : ""}
+              </button>
+              <span>${escapeHtml(task[0])}</span>
+            </div>
+            `
+        )
+        .join("");
 
 
   document
     .querySelectorAll(".task")
     .forEach(
-      element => {
+      item => {
 
-        element.onclick =
+        item.onclick =
           () => {
 
             const index =
               Number(
-                element.dataset.i
+                item.dataset.i
               );
 
             tasks[index][1] =
@@ -1793,14 +1855,31 @@ function renderTasks(){
 }
 
 
-function escapeHtml(text){
+function escapeHtml(
+  text
+){
 
   return String(text)
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
+    .replace(
+      /&/g,
+      "&amp;"
+    )
+    .replace(
+      /</g,
+      "&lt;"
+    )
+    .replace(
+      />/g,
+      "&gt;"
+    )
+    .replace(
+      /"/g,
+      "&quot;"
+    )
+    .replace(
+      /'/g,
+      "&#039;"
+    );
 
 }
 
@@ -1808,10 +1887,13 @@ function escapeHtml(text){
 renderTasks();
 
 
+/* =========================================================
+   ADD TASK
+========================================================= */
+
 document
   .getElementById("add")
-  .onclick =
-  () => {
+  .onclick = () => {
 
     const input =
       document.getElementById(
@@ -1821,21 +1903,20 @@ document
     const value =
       input.value.trim();
 
-
-    if(value){
-
-      tasks.push(
-        [
-          value,
-          false
-        ]
-      );
-
-      input.value = "";
-
-      renderTasks();
-
+    if(!value){
+      return;
     }
+
+    tasks.push(
+      [
+        value,
+        false
+      ]
+    );
+
+    input.value = "";
+
+    renderTasks();
 
   };
 
@@ -1846,8 +1927,7 @@ document
 
 document
   .getElementById("analyze")
-  .onclick =
-  async () => {
+  .onclick = async () => {
 
     const input =
       document.getElementById(
@@ -1857,60 +1937,49 @@ document
     const value =
       input.value.trim();
 
-
     if(!value){
       return;
     }
-
 
     setStatus(
       "FİKİR ANALİZ EDİLİYOR"
     );
 
-
     try{
 
       const answer =
         await ask(
-          `Fikir Laboratuvarı:
-"${value}"
-
-Bu fikri 6 kısa bölümde değerlendir:
-
-1. Problem
-2. Hedef kullanıcı
-3. Çözüm
-4. Teknoloji
-5. MVP
-6. Gelir modeli
-
-Türkçe, net ve uygulanabilir yaz.`,
+          `Fikir Laboratuvarı: "${value}". ` +
+          `Bu fikri 6 kısa bölümde değerlendir: ` +
+          `1 Problem ` +
+          `2 Hedef kullanıcı ` +
+          `3 Çözüm ` +
+          `4 Teknoloji ` +
+          `5 MVP ` +
+          `6 Gelir modeli. ` +
+          `Türkçe, net ve uygulanabilir yaz.`,
           "idea"
         );
 
+      document
+        .getElementById(
+          "flow"
+        )
+        .innerHTML =
+          `
+          <div class="step">
+            <b>AI ÜRÜN ANALİZİ</b>
+            <span>
+              ${escapeHtml(answer)
+                .replace(
+                  /\n/g,
+                  "<br>"
+                )}
+            </span>
+          </div>
+          `;
 
-      document.getElementById(
-        "flow"
-      ).innerHTML = `
-
-        <div class="step">
-
-          <b>AI ÜRÜN ANALİZİ</b>
-
-          <span>
-            ${escapeHtml(answer)
-              .replace(/\n/g,"<br>")}
-          </span>
-
-        </div>
-
-      `;
-
-
-      setStatus(
-        "AI HAZIR"
-      );
-
+      show("ideas");
 
     }catch(error){
 
@@ -1928,13 +1997,12 @@ Türkçe, net ve uygulanabilir yaz.`,
 
 
 /* =========================================================
-   FUTURE RADAR
+   FUTURE
 ========================================================= */
 
 document
   .getElementById("scan")
-  .onclick =
-  async () => {
+  .onclick = async () => {
 
     const input =
       document.getElementById(
@@ -1944,51 +2012,40 @@ document
     const value =
       input.value.trim();
 
-
     if(!value){
       return;
     }
 
-
     setStatus(
-      "GELECEK ANALİZ EDİLİYOR"
+      "GELECEK TARAMASI"
     );
-
 
     try{
 
       const answer =
         await ask(
-          `Gelecek Radarı:
-
-${value}
-
-Önümüzdeki 3, 5 ve 10 yıl için:
-
-- olası teknolojik gelişmeleri
-- fırsatları
-- riskleri
-- belirsizlikleri
-
-kısa ve temkinli biçimde değerlendir.`,
+          `Gelecek Radarı: ${value}. ` +
+          `Önümüzdeki 3, 5 ve 10 yıl için ` +
+          `olası teknolojik gelişmeleri, ` +
+          `fırsatları ve belirsizlikleri ` +
+          `kısa ve temkinli biçimde değerlendir.`,
           "future"
         );
 
-
-      document.getElementById(
-        "futureOut"
-      ).innerHTML =
-        escapeHtml(answer)
-          .replace(
-            /\n/g,
-            "<br>"
-          );
-
+      document
+        .getElementById(
+          "futureOut"
+        )
+        .innerHTML =
+          escapeHtml(answer)
+            .replace(
+              /\n/g,
+              "<br>"
+            );
 
       setStatus(
         "AI HAZIR"
       );
-
 
     }catch(error){
 
@@ -2019,13 +2076,14 @@ const ctx =
     "2d"
   );
 
-let W;
-let H;
-let D;
+let W = 0;
+let H = 0;
+let D = 1;
+
 let points = [];
 
 
-function resizeCanvas(){
+function resize(){
 
   D =
     window.devicePixelRatio ||
@@ -2037,13 +2095,11 @@ function resizeCanvas(){
   H =
     window.innerHeight;
 
-
   canvas.width =
     W * D;
 
   canvas.height =
     H * D;
-
 
   ctx.setTransform(
     D,
@@ -2054,7 +2110,6 @@ function resizeCanvas(){
     0
   );
 
-
   points =
     Array.from(
       {
@@ -2063,14 +2118,11 @@ function resizeCanvas(){
       () => ({
         x:
           Math.random() * W,
-
         y:
           Math.random() * H,
-
         v:
           .1 +
           Math.random() * .35,
-
         r:
           .3 +
           Math.random()
@@ -2080,7 +2132,7 @@ function resizeCanvas(){
 }
 
 
-function animateBackground(){
+function animate(){
 
   ctx.clearRect(
     0,
@@ -2089,14 +2141,12 @@ function animateBackground(){
     H
   );
 
-
   for(
     const point of points
   ){
 
     point.y +=
       point.v;
-
 
     if(
       point.y > H
@@ -2106,43 +2156,38 @@ function animateBackground(){
 
     }
 
-
     ctx.fillStyle =
       "rgba(32,220,255,.3)";
 
-
     ctx.beginPath();
-
 
     ctx.arc(
       point.x,
       point.y,
       point.r,
       0,
-      Math.PI * 2
+      7
     );
-
 
     ctx.fill();
 
   }
 
-
   requestAnimationFrame(
-    animateBackground
+    animate
   );
 
 }
 
 
-resizeCanvas();
+resize();
 
 window.addEventListener(
   "resize",
-  resizeCanvas
+  resize
 );
 
-animateBackground();
+animate();
 
 
 /* =========================================================
@@ -2150,7 +2195,7 @@ animateBackground();
 ========================================================= */
 
 setStatus(
-  "AI HAZIR"
+  "HAZIR"
 );
 
 </script>
