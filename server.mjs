@@ -41,7 +41,7 @@ app.use(
 );
 
 /* =========================================================
-   AUDIO UPLOAD
+   UPLOAD
 ========================================================= */
 
 const upload = multer({
@@ -62,10 +62,10 @@ Türkçe konuş.
 
 Doğal, anlaşılır, net ve faydalı cevaplar ver.
 
-Sesli kullanım için gereksiz uzunlukta cevap verme.
+Sesli kullanım için gereksiz uzun cevaplar verme.
 Kullanıcı ayrıntı istemediyse doğrudan konuya gir.
 
-Kullanıcı bir soru sorduğunda soruyu gerçekten cevapla.
+Kullanıcının sorusunu gerçekten cevapla.
 Cevabı yarıda bırakma.
 
 Fikir Laboratuvarı isteklerinde:
@@ -95,7 +95,8 @@ app.get("/api/health", (_req, res) => {
     service: "ERKAN LIFE OS",
     ai: Boolean(GEMINI_API_KEY),
     model: AI_MODEL,
-    ttsModel: TTS_MODEL
+    ttsModel: TTS_MODEL,
+    streamingTTS: true
   });
 });
 
@@ -180,11 +181,6 @@ app.post("/api/chat", async (req, res) => {
 
           temperature: 0.6,
 
-          /*
-           * Önceki 700 token yerine biraz daha düşük
-           * tutuyoruz. Böylece normal sesli cevaplar
-           * daha hızlı tamamlanır.
-           */
           maxOutputTokens: 550
         }
       });
@@ -220,11 +216,11 @@ app.post("/api/chat", async (req, res) => {
 });
 
 /* =========================================================
-   PCM -> WAV
+   PCM -> WAV HEADER
 ========================================================= */
 
-function pcmToWav(
-  pcmBuffer,
+function createWavHeader(
+  dataLength,
   sampleRate = 24000,
   channels = 1,
   bitsPerSample = 16
@@ -248,7 +244,7 @@ function pcmToWav(
   );
 
   header.writeUInt32LE(
-    36 + pcmBuffer.length,
+    36 + dataLength,
     4
   );
 
@@ -303,18 +299,15 @@ function pcmToWav(
   );
 
   header.writeUInt32LE(
-    pcmBuffer.length,
+    dataLength,
     40
   );
 
-  return Buffer.concat([
-    header,
-    pcmBuffer
-  ]);
+  return header;
 }
 
 /* =========================================================
-   TEXT TO SPEECH
+   TEXT TO SPEECH - STREAMING
 ========================================================= */
 
 app.post(
@@ -348,132 +341,203 @@ app.post(
           .slice(0, 5000);
 
       console.log(
-        "TTS başlatılıyor:",
+        "TTS STREAM başlatılıyor:",
         TTS_MODEL
       );
 
-      const response =
-        await genai.models.generateContent({
+      /*
+       * Gemini 3.1 Flash TTS streaming.
+       *
+       * Model PCM ses parçalarını üretirken
+       * stream üzerinden gönderir.
+       */
+
+      const stream =
+        await genai.interactions.create({
           model: TTS_MODEL,
 
-          contents: [
-            {
-              parts: [
-                {
-                  text:
-                    "Türkçe konuş. " +
-                    "Doğal, sıcak ve anlaşılır bir erkek anlatıcı gibi oku. " +
-                    "Normal konuşma hızında konuş. " +
-                    "Cümleler arasında doğal kısa duraklamalar bırak.\n\n" +
-                    cleanText
-                }
-              ]
-            }
-          ],
+          input:
+            "Türkçe konuş. " +
+            "Doğal, sıcak, anlaşılır ve akıcı bir erkek anlatıcı gibi oku. " +
+            "Normal konuşma hızında konuş. " +
+            "Cümleler arasında doğal kısa duraklamalar bırak.\n\n" +
+            cleanText,
 
-          config: {
-            responseModalities: [
-              "AUDIO"
-            ],
+          response_format: {
+            type: "audio"
+          },
 
-            speechConfig: {
-              voiceConfig: {
-                prebuiltVoiceConfig: {
-                  voiceName: "Kore"
-                }
+          generation_config: {
+            speech_config: [
+              {
+                voice: "Kore"
               }
-            }
-          }
+            ]
+          },
+
+          stream: true
         });
 
-      const parts =
-        response
-          ?.candidates?.[0]
-          ?.content?.parts || [];
+      /*
+       * Tarayıcıya PCM akışı göndereceğiz.
+       *
+       * Not:
+       * WAV başlığını toplam uzunluk bilinmediği için
+       * burada önceden yazmıyoruz.
+       *
+       * index.html tarafında gelen PCM parçaları
+       * AudioContext ile oynatılacak.
+       */
 
-      const audioPart =
-        parts.find(
-          (part) =>
-            part?.inlineData?.data
-        );
+      res.statusCode = 200;
 
-      if (!audioPart) {
+      res.setHeader(
+        "Content-Type",
+        "application/octet-stream"
+      );
 
-        console.error(
-          "TTS ses verisi bulunamadı."
-        );
+      res.setHeader(
+        "X-Audio-Format",
+        "pcm_s16le"
+      );
 
-        throw new Error(
-          "Gemini ses verisi döndürmedi."
-        );
+      res.setHeader(
+        "X-Audio-Sample-Rate",
+        "24000"
+      );
+
+      res.setHeader(
+        "X-Audio-Channels",
+        "1"
+      );
+
+      res.setHeader(
+        "X-Audio-Bit-Depth",
+        "16"
+      );
+
+      res.setHeader(
+        "Cache-Control",
+        "no-cache, no-store, must-revalidate"
+      );
+
+      res.setHeader(
+        "X-Accel-Buffering",
+        "no"
+      );
+
+      /*
+       * Stream içindeki her audio delta'yı
+       * doğrudan response'a yazıyoruz.
+       */
+
+      let totalBytes = 0;
+      let firstAudio = true;
+
+      for await (const event of stream) {
+
+        if (
+          event?.event_type !==
+          "step.delta"
+        ) {
+          continue;
+        }
+
+        const delta =
+          event?.delta;
+
+        if (
+          !delta ||
+          delta.type !== "audio" ||
+          !delta.data
+        ) {
+          continue;
+        }
+
+        const audioBuffer =
+          Buffer.from(
+            delta.data,
+            "base64"
+          );
+
+        if (!audioBuffer.length) {
+          continue;
+        }
+
+        if (firstAudio) {
+
+          firstAudio = false;
+
+          console.log(
+            "İlk TTS ses parçası:",
+            Date.now() - started,
+            "ms"
+          );
+        }
+
+        totalBytes +=
+          audioBuffer.length;
+
+        if (!res.destroyed) {
+          res.write(
+            audioBuffer
+          );
+        }
       }
-
-      const pcmBuffer =
-        Buffer.from(
-          audioPart.inlineData.data,
-          "base64"
-        );
-
-      if (!pcmBuffer.length) {
-        throw new Error(
-          "Gemini boş ses verisi döndürdü."
-        );
-      }
-
-      const wavBuffer =
-        pcmToWav(
-          pcmBuffer,
-          24000,
-          1,
-          16
-        );
 
       console.log(
-        "TTS tamamlandı:",
+        "TTS STREAM tamamlandı:",
+        totalBytes,
+        "bytes /",
         Date.now() - started,
         "ms"
       );
 
-      res.setHeader(
-        "Content-Type",
-        "audio/wav"
-      );
-
-      res.setHeader(
-        "Content-Length",
-        wavBuffer.length
-      );
-
-      return res.send(
-        wavBuffer
-      );
+      if (!res.destroyed) {
+        res.end();
+      }
 
     } catch (err) {
 
       console.error(
-        "Gemini TTS error:",
+        "Gemini TTS STREAM error:",
         err
       );
 
-      return res.status(500).json({
-        error:
-          "Ses üretilemedi.",
-        detail:
-          process.env.NODE_ENV ===
-          "production"
-            ? undefined
-            : String(
-                err?.message || err
-              )
-      });
+      /*
+       * Eğer response henüz başlamadıysa
+       * JSON hata mesajı döndür.
+       */
+
+      if (!res.headersSent) {
+
+        return res.status(500).json({
+          error:
+            "Ses üretilemedi.",
+          detail:
+            process.env.NODE_ENV ===
+            "production"
+              ? undefined
+              : String(
+                  err?.message || err
+                )
+        });
+      }
+
+      /*
+       * Stream başladıktan sonra hata oluşursa
+       * bağlantıyı kapatıyoruz.
+       */
+
+      if (!res.destroyed) {
+        res.destroy();
+      }
     }
   }
 );
 
 /* =========================================================
    TRANSCRIBE
-   Küçük ses dosyasını doğrudan Gemini'ye gönderiyoruz.
-   Böylece ayrıca Files API upload aşamasını kullanmıyoruz.
 ========================================================= */
 
 app.post(
@@ -531,8 +595,7 @@ app.post(
                   text:
                     "Bu ses kaydındaki Türkçe konuşmayı " +
                     "yalnızca yazıya çevir. " +
-                    "Açıklama, yorum veya ek metin yazma. " +
-                    "Konuşulan cümleyi mümkün olduğunca doğru aktar."
+                    "Açıklama veya yorum ekleme."
                 },
                 {
                   inlineData: {
@@ -626,6 +689,10 @@ app.listen(
 
     console.log(
       `TTS Model: ${TTS_MODEL}`
+    );
+
+    console.log(
+      "TTS Streaming: AKTIF"
     );
   }
 );
