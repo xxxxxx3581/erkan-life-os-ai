@@ -8,6 +8,7 @@
 
 <style>
 *{box-sizing:border-box}
+
 html,body{
   margin:0;
   height:100%;
@@ -15,7 +16,10 @@ html,body{
   color:#f5f8fb;
   font-family:Inter,Arial,sans-serif
 }
-body{overflow:hidden}
+
+body{
+  overflow:hidden
+}
 
 :root{
   --c:#20dcff;
@@ -463,7 +467,6 @@ h1 span{
 
 </section>
 
-
 <section class="view" id="today">
 
   <button class="back" data-v="home">← ANA</button>
@@ -482,16 +485,11 @@ h1 span{
   <div class="panel" id="tasks"></div>
 
   <div class="row">
-    <input
-      class="input"
-      id="task"
-      placeholder="Yeni görev..."
-    >
+    <input class="input" id="task" placeholder="Yeni görev...">
     <button class="btn" id="add">EKLE</button>
   </div>
 
 </section>
-
 
 <section class="view" id="ai">
 
@@ -541,7 +539,6 @@ h1 span{
 
 </section>
 
-
 <section class="view" id="ideas">
 
   <button class="back" data-v="home">← ANA</button>
@@ -574,7 +571,6 @@ h1 span{
   <div class="flow" id="flow"></div>
 
 </section>
-
 
 <section class="view" id="future">
 
@@ -613,33 +609,17 @@ h1 span{
 
 </main>
 
-
 <nav class="bottom">
 
-  <button class="nav on" data-v="home">
-    ⌂ ANA
-  </button>
-
-  <button class="nav" data-v="today">
-    ◎ BUGÜN
-  </button>
-
-  <button class="nav" data-v="ai">
-    ✦ AI
-  </button>
-
-  <button class="nav" data-v="ideas">
-    ◇ FİKİR
-  </button>
-
-  <button class="nav" data-v="future">
-    ⌁ GELECEK
-  </button>
+  <button class="nav on" data-v="home">⌂ ANA</button>
+  <button class="nav" data-v="today">◎ BUGÜN</button>
+  <button class="nav" data-v="ai">✦ AI</button>
+  <button class="nav" data-v="ideas">◇ FİKİR</button>
+  <button class="nav" data-v="future">⌁ GELECEK</button>
 
 </nav>
 
 </div>
-
 
 <script>
 
@@ -652,8 +632,6 @@ const views =
 
 const nav =
   [...document.querySelectorAll(".nav")];
-
-let current = "home";
 
 let history = [];
 
@@ -673,7 +651,6 @@ function show(id){
     )
   );
 
-  current = id;
 }
 
 document
@@ -690,7 +667,7 @@ document
    STATUS
 ========================================================= */
 
-const setStatus = text => {
+function setStatus(text){
 
   const el =
     document.getElementById("status");
@@ -699,17 +676,14 @@ const setStatus = text => {
     el.textContent = text;
   }
 
-};
+}
 
 
 /* =========================================================
    API
 ========================================================= */
 
-async function api(
-  url,
-  opts = {}
-){
+async function api(url,opts={}){
 
   const response =
     await fetch(
@@ -717,8 +691,7 @@ async function api(
       {
         ...opts,
         headers:{
-          "Content-Type":
-            "application/json",
+          "Content-Type":"application/json",
           ...(opts.headers || {})
         }
       }
@@ -739,6 +712,7 @@ async function api(
   }
 
   return data;
+
 }
 
 
@@ -746,10 +720,7 @@ async function api(
    CHAT
 ========================================================= */
 
-async function ask(
-  text,
-  mode = "assistant"
-){
+async function ask(text,mode="assistant"){
 
   setStatus("AI DÜŞÜNÜYOR");
 
@@ -792,12 +763,12 @@ async function ask(
 
   }catch(error){
 
-    setStatus(
-      "BAĞLANTI HATASI"
-    );
+    setStatus("BAĞLANTI HATASI");
 
     throw error;
+
   }
+
 }
 
 
@@ -805,20 +776,13 @@ async function ask(
    CHAT BUBBLE
 ========================================================= */
 
-function bubble(
-  text,
-  cls
-){
+function bubble(text,cls){
 
   const chat =
-    document.getElementById(
-      "chat"
-    );
+    document.getElementById("chat");
 
   const b =
-    document.createElement(
-      "div"
-    );
+    document.createElement("div");
 
   b.className =
     "bubble " + cls;
@@ -835,331 +799,34 @@ function bubble(
 
 
 /* =========================================================
-   STREAMING AUDIO ENGINE
+   NORMAL WAV SPEECH
 ========================================================= */
 
-let audioContext = null;
+let currentAudio = null;
 
-let audioQueue = [];
-
-let audioPlaying = false;
-
-let nextAudioTime = 0;
-
-let audioLeftover =
-  new Uint8Array(0);
-
-
-/*
- * AudioContext'i kullanıcı etkileşimi
- * sonrasında oluşturuyoruz.
- */
-
-function getAudioContext(){
-
-  if(!audioContext){
-
-    audioContext =
-      new (
-        window.AudioContext ||
-        window.webkitAudioContext
-      )();
-
-  }
-
-  return audioContext;
-}
-
-
-/*
- * PCM byte -> Float32
- */
-
-function pcmToFloat32(
-  bytes
-){
-
-  const view =
-    new DataView(
-      bytes.buffer,
-      bytes.byteOffset,
-      bytes.byteLength
-    );
-
-  const sampleCount =
-    Math.floor(
-      bytes.byteLength / 2
-    );
-
-  const output =
-    new Float32Array(
-      sampleCount
-    );
-
-  for(
-    let i = 0;
-    i < sampleCount;
-    i++
-  ){
-
-    const value =
-      view.getInt16(
-        i * 2,
-        true
-      );
-
-    output[i] =
-      Math.max(
-        -1,
-        Math.min(
-          1,
-          value / 32768
-        )
-      );
-
-  }
-
-  return output;
-}
-
-
-/*
- * Streaming PCM parçalarını
- * Web Audio API ile sıraya koyuyoruz.
- */
-
-function playPCMChunk(
-  bytes
-){
-
-  const ctx =
-    getAudioContext();
-
-  if(
-    ctx.state ===
-    "suspended"
-  ){
-
-    ctx.resume();
-
-  }
-
-  /*
-   * PCM örnekleri 16-bit olduğu için
-   * tek byte kalmışsa sonraki chunk ile
-   * birleştiriyoruz.
-   */
-
-  if(
-    audioLeftover.length
-  ){
-
-    const merged =
-      new Uint8Array(
-        audioLeftover.length +
-        bytes.length
-      );
-
-    merged.set(
-      audioLeftover,
-      0
-    );
-
-    merged.set(
-      bytes,
-      audioLeftover.length
-    );
-
-    bytes =
-      merged;
-
-    audioLeftover =
-      new Uint8Array(0);
-
-  }
-
-  if(
-    bytes.length % 2 !== 0
-  ){
-
-    audioLeftover =
-      bytes.slice(
-        bytes.length - 1
-      );
-
-    bytes =
-      bytes.slice(
-        0,
-        bytes.length - 1
-      );
-
-  }
-
-  if(!bytes.length){
-    return;
-  }
-
-  const samples =
-    pcmToFloat32(
-      bytes
-    );
-
-  const buffer =
-    ctx.createBuffer(
-      1,
-      samples.length,
-      24000
-    );
-
-  buffer
-    .getChannelData(0)
-    .set(samples);
-
-  const source =
-    ctx.createBufferSource();
-
-  source.buffer =
-    buffer;
-
-  source.connect(
-    ctx.destination
-  );
-
-  const now =
-    ctx.currentTime;
-
-  /*
-   * İlk chunk geldiğinde hemen başlat.
-   * Sonraki chunk'lar öncekinin sonuna
-   * bağlanır.
-   */
-
-  if(
-    nextAudioTime <
-    now + 0.03
-  ){
-
-    nextAudioTime =
-      now + 0.03;
-
-  }
-
-  source.start(
-    nextAudioTime
-  );
-
-  nextAudioTime +=
-    buffer.duration;
-
-  audioQueue.push(
-    source
-  );
-
-  source.onended = () => {
-
-    const index =
-      audioQueue.indexOf(
-        source
-      );
-
-    if(index !== -1){
-
-      audioQueue.splice(
-        index,
-        1
-      );
-
-    }
-
-    if(
-      audioQueue.length === 0 &&
-      !audioPlaying
-    ){
-
-      document
-        .getElementById("listen")
-        ?.classList.remove(
-          "speaking"
-        );
-
-    }
-
-  };
-
-}
-
-
-/* =========================================================
-   STOP AUDIO
-========================================================= */
-
-function stopAudio(){
-
-  audioQueue.forEach(
-    source => {
-
-      try{
-        source.stop();
-      }catch(_){}
-
-    }
-  );
-
-  audioQueue = [];
-
-  audioPlaying = false;
-
-  audioLeftover =
-    new Uint8Array(0);
-
-  nextAudioTime = 0;
-
-  if(audioContext){
-
-    try{
-      audioContext.close();
-    }catch(_){}
-
-    audioContext =
-      null;
-
-  }
-
-}
-
-
-/* =========================================================
-   STREAM SPEECH
-========================================================= */
-
-async function speakText(
-  text
-){
+async function speakText(text){
 
   if(!text){
     return;
   }
 
-  /*
-   * Önceki ses varsa durdur.
-   */
+  if(currentAudio){
 
-  stopAudio();
+    try{
+      currentAudio.pause();
+      currentAudio.currentTime = 0;
+    }catch(_){}
+
+    currentAudio = null;
+
+  }
 
   const button =
-    document.getElementById(
-      "listen"
-    );
+    document.getElementById("listen");
 
-  button?.classList.add(
-    "speaking"
-  );
+  button?.classList.add("speaking");
 
-  audioPlaying = true;
-
-  setStatus(
-    "SES BAŞLATILIYOR"
-  );
+  setStatus("SES HAZIRLANIYOR");
 
   try{
 
@@ -1169,11 +836,10 @@ async function speakText(
         {
           method:"POST",
           headers:{
-            "Content-Type":
-              "application/json"
+            "Content-Type":"application/json"
           },
           body:JSON.stringify({
-            text
+            text:String(text)
           })
         }
       );
@@ -1194,124 +860,83 @@ async function speakText(
 
       }catch(_){}
 
+      throw new Error(message);
+
+    }
+
+    const blob =
+      await response.blob();
+
+    if(!blob.size){
+
       throw new Error(
-        message
+        "Ses verisi boş geldi."
       );
 
     }
 
-    /*
-     * Stream okuyucusu.
-     */
+    const audioUrl =
+      URL.createObjectURL(blob);
 
-    const reader =
-      response.body?.getReader();
+    const audio =
+      new Audio(audioUrl);
 
-    if(!reader){
+    currentAudio =
+      audio;
 
-      throw new Error(
-        "Ses akışı alınamadı."
-      );
+    audio.preload =
+      "auto";
 
-    }
-
-    const decoder =
-      new TextDecoder();
-
-    let firstAudio = true;
-
-    while(true){
-
-      const {
-        done,
-        value
-      } =
-        await reader.read();
-
-      if(done){
-        break;
-      }
-
-      if(!value){
-        continue;
-      }
-
-      /*
-       * İlk ses parçası geldiği anda
-       * kullanıcıya artık ses başladığını bildir.
-       */
-
-      if(firstAudio){
-
-        firstAudio = false;
+    audio.onplay =
+      () => {
 
         setStatus(
           "AI KONUŞUYOR"
         );
 
-      }
+      };
 
-      playPCMChunk(
-        value
-      );
+    audio.onended =
+      () => {
 
-    }
+        button?.classList.remove(
+          "speaking"
+        );
 
-    /*
-     * Stream tamamen bittikten sonra
-     * kalan son tek byte varsa yok say.
-     */
+        setStatus(
+          "AI HAZIR"
+        );
 
-    audioLeftover =
-      new Uint8Array(0);
+        URL.revokeObjectURL(
+          audioUrl
+        );
 
-    /*
-     * Ses kuyruğunun bitmesini bekle.
-     */
+        currentAudio = null;
 
-    const waitUntilFinished =
-      () =>
-        new Promise(resolve => {
+      };
 
-          const check =
-            () => {
+    audio.onerror =
+      () => {
 
-              if(
-                audioQueue.length === 0
-              ){
+        button?.classList.remove(
+          "speaking"
+        );
 
-                resolve();
+        setStatus(
+          "SES HATASI"
+        );
 
-              }else{
+        URL.revokeObjectURL(
+          audioUrl
+        );
 
-                setTimeout(
-                  check,
-                  80
-                );
+        currentAudio = null;
 
-              }
+      };
 
-            };
-
-          check();
-
-        });
-
-    await waitUntilFinished();
-
-    audioPlaying = false;
-
-    button?.classList.remove(
-      "speaking"
-    );
-
-    setStatus(
-      "AI HAZIR"
-    );
+    await audio.play();
 
   }catch(error){
-
-    audioPlaying = false;
 
     button?.classList.remove(
       "speaking"
@@ -1322,7 +947,7 @@ async function speakText(
     );
 
     console.error(
-      "Streaming TTS error:",
+      "TTS error:",
       error
     );
 
@@ -1342,9 +967,7 @@ document
   .onclick = async () => {
 
     const input =
-      document.getElementById(
-        "msg"
-      );
+      document.getElementById("msg");
 
     const text =
       input.value.trim();
@@ -1371,7 +994,8 @@ document
       );
 
       /*
-       * Cevap gelir gelmez otomatik seslendir.
+       * AI cevabı gelir gelmez
+       * otomatik olarak seslendir.
        */
 
       try{
@@ -1414,14 +1038,10 @@ document
   .getElementById("msg")
   .onkeydown = event => {
 
-    if(
-      event.key === "Enter"
-    ){
+    if(event.key === "Enter"){
 
       document
-        .getElementById(
-          "send"
-        )
+        .getElementById("send")
         .click();
 
     }
@@ -1475,43 +1095,21 @@ document
 ========================================================= */
 
 let recorder = null;
-
 let chunks = [];
-
 let micStream = null;
 
-
-/*
- * Maksimum kayıt süresi.
- * Kullanıcı konuşmasını bitirirse
- * butona tekrar basarak da durdurabilir.
- */
-
-const MAX_RECORDING_MS =
-  12000;
-
-
-/* =========================================================
-   START / STOP MICROPHONE
-========================================================= */
+const MAX_RECORDING_MS = 12000;
 
 document
   .getElementById("mic")
   .onclick = async () => {
 
     const button =
-      document.getElementById(
-        "mic"
-      );
-
-    /*
-     * Zaten kayıt yapıyorsak durdur.
-     */
+      document.getElementById("mic");
 
     if(
       recorder &&
-      recorder.state ===
-      "recording"
+      recorder.state === "recording"
     ){
 
       recorder.stop();
@@ -1521,23 +1119,6 @@ document
     }
 
     try{
-
-      /*
-       * AudioContext'i kullanıcı
-       * hareketi sırasında hazırla.
-       */
-
-      const ctx =
-        getAudioContext();
-
-      if(
-        ctx.state ===
-        "suspended"
-      ){
-
-        await ctx.resume();
-
-      }
 
       micStream =
         await navigator
@@ -1591,7 +1172,6 @@ document
 
         };
 
-
       recorder.onstop =
         async () => {
 
@@ -1605,9 +1185,7 @@ document
 
           try{
 
-            if(
-              micStream
-            ){
+            if(micStream){
 
               micStream
                 .getTracks()
@@ -1616,8 +1194,7 @@ document
                     track.stop()
                 );
 
-              micStream =
-                null;
+              micStream = null;
 
             }
 
@@ -1631,9 +1208,7 @@ document
                 }
               );
 
-            if(
-              blob.size === 0
-            ){
+            if(blob.size === 0){
 
               throw new Error(
                 "Ses kaydı boş."
@@ -1662,13 +1237,9 @@ document
             const data =
               await response
                 .json()
-                .catch(
-                  () => ({})
-                );
+                .catch(() => ({}));
 
-            if(
-              !response.ok
-            ){
+            if(!response.ok){
 
               throw new Error(
                 data.error ||
@@ -1692,8 +1263,8 @@ document
             }
 
             /*
-             * Önce algılanan konuşmayı
-             * mesaj kutusuna yaz.
+             * Algılanan konuşmayı
+             * ekrana yaz.
              */
 
             const input =
@@ -1705,13 +1276,20 @@ document
               text;
 
             /*
-             * Sonra otomatik gönder.
+             * Ardından otomatik gönder.
+             * Böylece:
+             *
+             * Mikrofon
+             * ↓
+             * Yazı
+             * ↓
+             * AI
+             * ↓
+             * Otomatik ses
              */
 
             document
-              .getElementById(
-                "send"
-              )
+              .getElementById("send")
               .click();
 
           }catch(error){
@@ -1733,7 +1311,6 @@ document
 
         };
 
-
       recorder.start();
 
       button.classList.add(
@@ -1744,17 +1321,12 @@ document
         "DİNLİYOR"
       );
 
-      /*
-       * Maksimum 12 saniye.
-       */
-
       setTimeout(
         () => {
 
           if(
             recorder &&
-            recorder.state ===
-            "recording"
+            recorder.state === "recording"
           ){
 
             recorder.stop();
@@ -1805,6 +1377,16 @@ const tasks = [
   ]
 ];
 
+function escapeHtml(text){
+
+  return String(text)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+
+}
 
 function renderTasks(){
 
@@ -1822,12 +1404,14 @@ function renderTasks(){
               <button class="check">
                 ${task[1] ? "✓" : ""}
               </button>
-              <span>${escapeHtml(task[0])}</span>
+
+              <span>
+                ${escapeHtml(task[0])}
+              </span>
             </div>
             `
         )
         .join("");
-
 
   document
     .querySelectorAll(".task")
@@ -1854,36 +1438,6 @@ function renderTasks(){
 
 }
 
-
-function escapeHtml(
-  text
-){
-
-  return String(text)
-    .replace(
-      /&/g,
-      "&amp;"
-    )
-    .replace(
-      /</g,
-      "&lt;"
-    )
-    .replace(
-      />/g,
-      "&gt;"
-    )
-    .replace(
-      /"/g,
-      "&quot;"
-    )
-    .replace(
-      /'/g,
-      "&#039;"
-    );
-
-}
-
-
 renderTasks();
 
 
@@ -1896,9 +1450,7 @@ document
   .onclick = () => {
 
     const input =
-      document.getElementById(
-        "task"
-      );
+      document.getElementById("task");
 
     const value =
       input.value.trim();
@@ -1907,12 +1459,10 @@ document
       return;
     }
 
-    tasks.push(
-      [
-        value,
-        false
-      ]
-    );
+    tasks.push([
+      value,
+      false
+    ]);
 
     input.value = "";
 
@@ -1930,9 +1480,7 @@ document
   .onclick = async () => {
 
     const input =
-      document.getElementById(
-        "idea"
-      );
+      document.getElementById("idea");
 
     const value =
       input.value.trim();
@@ -1962,19 +1510,14 @@ document
         );
 
       document
-        .getElementById(
-          "flow"
-        )
+        .getElementById("flow")
         .innerHTML =
           `
           <div class="step">
             <b>AI ÜRÜN ANALİZİ</b>
             <span>
               ${escapeHtml(answer)
-                .replace(
-                  /\n/g,
-                  "<br>"
-                )}
+                .replace(/\n/g,"<br>")}
             </span>
           </div>
           `;
@@ -1987,9 +1530,7 @@ document
         error.message
       );
 
-      setStatus(
-        "HATA"
-      );
+      setStatus("HATA");
 
     }
 
@@ -2005,9 +1546,7 @@ document
   .onclick = async () => {
 
     const input =
-      document.getElementById(
-        "topic"
-      );
+      document.getElementById("topic");
 
     const value =
       input.value.trim();
@@ -2033,15 +1572,10 @@ document
         );
 
       document
-        .getElementById(
-          "futureOut"
-        )
+        .getElementById("futureOut")
         .innerHTML =
           escapeHtml(answer)
-            .replace(
-              /\n/g,
-              "<br>"
-            );
+            .replace(/\n/g,"<br>");
 
       setStatus(
         "AI HAZIR"
@@ -2053,9 +1587,7 @@ document
         error.message
       );
 
-      setStatus(
-        "HATA"
-      );
+      setStatus("HATA");
 
     }
 
@@ -2067,27 +1599,20 @@ document
 ========================================================= */
 
 const canvas =
-  document.getElementById(
-    "bg"
-  );
+  document.getElementById("bg");
 
 const ctx =
-  canvas.getContext(
-    "2d"
-  );
+  canvas.getContext("2d");
 
 let W = 0;
 let H = 0;
 let D = 1;
-
 let points = [];
-
 
 function resize(){
 
   D =
-    window.devicePixelRatio ||
-    1;
+    window.devicePixelRatio || 1;
 
   W =
     window.innerWidth;
@@ -2116,21 +1641,14 @@ function resize(){
         length:100
       },
       () => ({
-        x:
-          Math.random() * W,
-        y:
-          Math.random() * H,
-        v:
-          .1 +
-          Math.random() * .35,
-        r:
-          .3 +
-          Math.random()
+        x:Math.random() * W,
+        y:Math.random() * H,
+        v:.1 + Math.random() * .35,
+        r:.3 + Math.random()
       })
     );
 
 }
-
 
 function animate(){
 
@@ -2145,15 +1663,10 @@ function animate(){
     const point of points
   ){
 
-    point.y +=
-      point.v;
+    point.y += point.v;
 
-    if(
-      point.y > H
-    ){
-
+    if(point.y > H){
       point.y = -2;
-
     }
 
     ctx.fillStyle =
@@ -2179,7 +1692,6 @@ function animate(){
 
 }
 
-
 resize();
 
 window.addEventListener(
@@ -2189,14 +1701,7 @@ window.addEventListener(
 
 animate();
 
-
-/* =========================================================
-   INITIAL STATUS
-========================================================= */
-
-setStatus(
-  "HAZIR"
-);
+setStatus("HAZIR");
 
 </script>
 
