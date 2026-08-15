@@ -413,11 +413,6 @@ app.post(
         );
       }
 
-      /*
-       * Gemini TTS PCM sesini
-       * WAV kapsayıcısına çeviriyoruz.
-       */
-
       const wavBuffer =
         pcmToWav(
           pcmBuffer,
@@ -472,7 +467,7 @@ app.post(
 );
 
 /* ---------------------------------------------------------
-   TRANSCRIBE
+   TRANSCRIBE — MİKROFON
 --------------------------------------------------------- */
 
 app.post(
@@ -491,29 +486,116 @@ app.post(
         });
       }
 
+      if (!GEMINI_API_KEY) {
+        return res.status(500).json({
+          error:
+            "GEMINI_API_KEY tanımlı değil."
+        });
+      }
+
       filePath =
         req.file.path;
 
+      const mimeType =
+        req.file.mimetype ||
+        "audio/webm";
+
+      console.log(
+        "Mikrofon kaydı alındı:",
+        req.file.size,
+        "bytes",
+        mimeType
+      );
+
       /*
-       * Mikrofon -> yazıya çevirme
-       * sonraki aşamada aktif edilecek.
+       * Küçük ses dosyasını doğrudan
+       * Gemini'ye inline audio olarak gönderiyoruz.
        */
 
-      return res.status(501).json({
-        error:
-          "Mikrofon özelliği henüz etkinleştirilmedi."
+      const audioBase64 =
+        await fs.promises.readFile(
+          filePath,
+          {
+            encoding: "base64"
+          }
+        );
+
+      const response =
+        await genai.models.generateContent({
+          model: AI_MODEL,
+
+          contents: [
+            {
+              role: "user",
+              parts: [
+                {
+                  text: `
+Bu bir Türkçe mikrofon kaydıdır.
+
+Konuşmayı mümkün olduğunca doğru şekilde
+Türkçe metne çevir.
+
+Sadece konuşulan metni yaz.
+Açıklama ekleme.
+"İşte transkript" gibi giriş yapma.
+Konuşmada duyulmayan kelimeleri uydurma.
+`
+                },
+                {
+                  inlineData: {
+                    mimeType,
+                    data: audioBase64
+                  }
+                }
+              ]
+            }
+          ],
+
+          config: {
+            temperature: 0.1,
+
+            maxOutputTokens: 500
+          }
+        });
+
+      const text =
+        response.text?.trim();
+
+      if (!text) {
+        throw new Error(
+          "Gemini ses kaydından metin çıkaramadı."
+        );
+      }
+
+      console.log(
+        "Transkripsiyon başarılı:",
+        text
+      );
+
+      return res.json({
+        text
       });
 
     } catch (err) {
 
       console.error(
-        "Transcription error:",
+        "Gemini transcription error:"
+      );
+
+      console.error(
         err
       );
 
       return res.status(500).json({
         error:
-          "Ses çözümlenemedi."
+          "Ses çözümlenemedi.",
+        detail:
+          process.env.NODE_ENV ===
+          "production"
+            ? undefined
+            : String(
+                err?.message || err
+              )
       });
 
     } finally {
