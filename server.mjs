@@ -8,9 +8,9 @@ import path from "node:path";
 const app = express();
 const port = process.env.PORT || 3000;
 
-/* ---------------------------------------------------------
+/* =========================================================
    CONFIG
---------------------------------------------------------- */
+========================================================= */
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
@@ -20,7 +20,7 @@ const AI_MODEL =
 
 const TTS_MODEL =
   process.env.GEMINI_TTS_MODEL ||
-  "gemini-2.5-flash-preview-tts";
+  "gemini-3.1-flash-tts-preview";
 
 if (!GEMINI_API_KEY) {
   console.warn("GEMINI_API_KEY bulunamadi.");
@@ -30,9 +30,9 @@ const genai = new GoogleGenAI({
   apiKey: GEMINI_API_KEY
 });
 
-/* ---------------------------------------------------------
+/* =========================================================
    EXPRESS
---------------------------------------------------------- */
+========================================================= */
 
 app.use(
   express.json({
@@ -40,9 +40,9 @@ app.use(
   })
 );
 
-/* ---------------------------------------------------------
-   UPLOAD
---------------------------------------------------------- */
+/* =========================================================
+   AUDIO UPLOAD
+========================================================= */
 
 const upload = multer({
   dest: "tmp/",
@@ -51,30 +51,30 @@ const upload = multer({
   }
 });
 
-/* ---------------------------------------------------------
+/* =========================================================
    AI SYSTEM
---------------------------------------------------------- */
+========================================================= */
 
 const developer = `
 Sen ERKAN LIFE OS'un kişisel dijital zekâsısın.
 
 Türkçe konuş.
 
-Kibar, doğal, anlaşılır, kısa ama faydalı cevaplar ver.
+Doğal, anlaşılır, net ve faydalı cevaplar ver.
 
-Gereksiz uzun listeler verme.
+Sesli kullanım için gereksiz uzunlukta cevap verme.
+Kullanıcı ayrıntı istemediyse doğrudan konuya gir.
 
-Kullanıcının amacını anlamaya çalış ve uygulanabilir
-cevaplar üret.
+Kullanıcı bir soru sorduğunda soruyu gerçekten cevapla.
+Cevabı yarıda bırakma.
 
 Fikir Laboratuvarı isteklerinde:
-
 - problem
 - hedef kullanıcı
 - çözüm
 - teknoloji
 - MVP/prototip
-- sürdürülebilir gelir modeli
+- gelir modeli
 
 açısından düşün.
 
@@ -82,13 +82,12 @@ Finans, sağlık veya hukuk gibi yüksek riskli konularda
 kesin hüküm verme ve gerektiğinde profesyonel destek öner.
 
 Kendini insan gibi tanıtma.
-
-Gerektiğinde bir yapay zekâ asistanı olduğunu açıkça belirt.
+Gerektiğinde yapay zekâ asistanı olduğunu açıkça belirt.
 `;
 
-/* ---------------------------------------------------------
+/* =========================================================
    HEALTH
---------------------------------------------------------- */
+========================================================= */
 
 app.get("/api/health", (_req, res) => {
   res.json({
@@ -100,11 +99,13 @@ app.get("/api/health", (_req, res) => {
   });
 });
 
-/* ---------------------------------------------------------
+/* =========================================================
    CHAT
---------------------------------------------------------- */
+========================================================= */
 
 app.post("/api/chat", async (req, res) => {
+  const started = Date.now();
+
   try {
     const {
       message,
@@ -121,7 +122,7 @@ app.post("/api/chat", async (req, res) => {
     const safeHistory =
       Array.isArray(history)
         ? history
-            .slice(-12)
+            .slice(-8)
             .map((item) => ({
               role:
                 item.role === "assistant"
@@ -131,7 +132,7 @@ app.post("/api/chat", async (req, res) => {
                 {
                   text: String(
                     item.content || ""
-                  ).slice(0, 4000)
+                  ).slice(0, 3000)
                 }
               ]
             }))
@@ -165,6 +166,8 @@ app.post("/api/chat", async (req, res) => {
       }
     ];
 
+    console.log("AI başlatılıyor...");
+
     const response =
       await genai.models.generateContent({
         model: AI_MODEL,
@@ -175,9 +178,14 @@ app.post("/api/chat", async (req, res) => {
             "\n\nMod: " +
             modeHint,
 
-          temperature: 0.7,
+          temperature: 0.6,
 
-          maxOutputTokens: 700
+          /*
+           * Önceki 700 token yerine biraz daha düşük
+           * tutuyoruz. Böylece normal sesli cevaplar
+           * daha hızlı tamamlanır.
+           */
+          maxOutputTokens: 550
         }
       });
 
@@ -185,7 +193,13 @@ app.post("/api/chat", async (req, res) => {
       response.text ||
       "Yanıt üretilemedi.";
 
-    res.json({
+    console.log(
+      "AI tamamlandı:",
+      Date.now() - started,
+      "ms"
+    );
+
+    return res.json({
       text,
       responseId:
         response.responseId || null
@@ -198,16 +212,16 @@ app.post("/api/chat", async (req, res) => {
       err
     );
 
-    res.status(500).json({
+    return res.status(500).json({
       error:
         "AI bağlantısında bir sorun oluştu."
     });
   }
 });
 
-/* ---------------------------------------------------------
+/* =========================================================
    PCM -> WAV
---------------------------------------------------------- */
+========================================================= */
 
 function pcmToWav(
   pcmBuffer,
@@ -299,13 +313,15 @@ function pcmToWav(
   ]);
 }
 
-/* ---------------------------------------------------------
+/* =========================================================
    TEXT TO SPEECH
---------------------------------------------------------- */
+========================================================= */
 
 app.post(
   "/api/speech",
   async (req, res) => {
+
+    const started = Date.now();
 
     try {
 
@@ -326,6 +342,11 @@ app.post(
         });
       }
 
+      const cleanText =
+        String(text)
+          .trim()
+          .slice(0, 5000);
+
       console.log(
         "TTS başlatılıyor:",
         TTS_MODEL
@@ -340,12 +361,11 @@ app.post(
               parts: [
                 {
                   text:
-                    "Türkçe olarak doğal, sıcak, anlaşılır ve akıcı bir erkek anlatıcı gibi oku. " +
+                    "Türkçe konuş. " +
+                    "Doğal, sıcak ve anlaşılır bir erkek anlatıcı gibi oku. " +
                     "Normal konuşma hızında konuş. " +
                     "Cümleler arasında doğal kısa duraklamalar bırak.\n\n" +
-                    String(text)
-                      .trim()
-                      .slice(0, 4096)
+                    cleanText
                 }
               ]
             }
@@ -366,15 +386,10 @@ app.post(
           }
         });
 
-      console.log(
-        "TTS Gemini yanıtı alındı."
-      );
-
       const parts =
         response
           ?.candidates?.[0]
-          ?.content
-          ?.parts || [];
+          ?.content?.parts || [];
 
       const audioPart =
         parts.find(
@@ -385,12 +400,7 @@ app.post(
       if (!audioPart) {
 
         console.error(
-          "TTS audio part bulunamadı:",
-          JSON.stringify(
-            response,
-            null,
-            2
-          )
+          "TTS ses verisi bulunamadı."
         );
 
         throw new Error(
@@ -398,12 +408,9 @@ app.post(
         );
       }
 
-      const base64Audio =
-        audioPart.inlineData.data;
-
       const pcmBuffer =
         Buffer.from(
-          base64Audio,
+          audioPart.inlineData.data,
           "base64"
         );
 
@@ -422,9 +429,9 @@ app.post(
         );
 
       console.log(
-        "TTS başarılı:",
-        wavBuffer.length,
-        "bytes"
+        "TTS tamamlandı:",
+        Date.now() - started,
+        "ms"
       );
 
       res.setHeader(
@@ -437,21 +444,18 @@ app.post(
         wavBuffer.length
       );
 
-      res.send(
+      return res.send(
         wavBuffer
       );
 
     } catch (err) {
 
       console.error(
-        "Gemini TTS error:"
-      );
-
-      console.error(
+        "Gemini TTS error:",
         err
       );
 
-      res.status(500).json({
+      return res.status(500).json({
         error:
           "Ses üretilemedi.",
         detail:
@@ -466,9 +470,11 @@ app.post(
   }
 );
 
-/* ---------------------------------------------------------
-   TRANSCRIBE — MİKROFON
---------------------------------------------------------- */
+/* =========================================================
+   TRANSCRIBE
+   Küçük ses dosyasını doğrudan Gemini'ye gönderiyoruz.
+   Böylece ayrıca Files API upload aşamasını kullanmıyoruz.
+========================================================= */
 
 app.post(
   "/api/transcribe",
@@ -476,6 +482,8 @@ app.post(
   async (req, res) => {
 
     let filePath;
+
+    const started = Date.now();
 
     try {
 
@@ -500,18 +508,6 @@ app.post(
         req.file.mimetype ||
         "audio/webm";
 
-      console.log(
-        "Mikrofon kaydı alındı:",
-        req.file.size,
-        "bytes",
-        mimeType
-      );
-
-      /*
-       * Küçük ses dosyasını doğrudan
-       * Gemini'ye inline audio olarak gönderiyoruz.
-       */
-
       const audioBase64 =
         await fs.promises.readFile(
           filePath,
@@ -520,26 +516,23 @@ app.post(
           }
         );
 
+      console.log(
+        "Transkripsiyon başlatılıyor..."
+      );
+
       const response =
         await genai.models.generateContent({
           model: AI_MODEL,
 
           contents: [
             {
-              role: "user",
               parts: [
                 {
-                  text: `
-Bu bir Türkçe mikrofon kaydıdır.
-
-Konuşmayı mümkün olduğunca doğru şekilde
-Türkçe metne çevir.
-
-Sadece konuşulan metni yaz.
-Açıklama ekleme.
-"İşte transkript" gibi giriş yapma.
-Konuşmada duyulmayan kelimeleri uydurma.
-`
+                  text:
+                    "Bu ses kaydındaki Türkçe konuşmayı " +
+                    "yalnızca yazıya çevir. " +
+                    "Açıklama, yorum veya ek metin yazma. " +
+                    "Konuşulan cümleyi mümkün olduğunca doğru aktar."
                 },
                 {
                   inlineData: {
@@ -552,24 +545,24 @@ Konuşmada duyulmayan kelimeleri uydurma.
           ],
 
           config: {
-            temperature: 0.1,
-
-            maxOutputTokens: 500
+            temperature: 0,
+            maxOutputTokens: 300
           }
         });
 
       const text =
-        response.text?.trim();
+        response.text?.trim() || "";
 
       if (!text) {
         throw new Error(
-          "Gemini ses kaydından metin çıkaramadı."
+          "Ses metne çevrilemedi."
         );
       }
 
       console.log(
-        "Transkripsiyon başarılı:",
-        text
+        "Transkripsiyon tamamlandı:",
+        Date.now() - started,
+        "ms"
       );
 
       return res.json({
@@ -579,23 +572,13 @@ Konuşmada duyulmayan kelimeleri uydurma.
     } catch (err) {
 
       console.error(
-        "Gemini transcription error:"
-      );
-
-      console.error(
+        "Transcription error:",
         err
       );
 
       return res.status(500).json({
         error:
-          "Ses çözümlenemedi.",
-        detail:
-          process.env.NODE_ENV ===
-          "production"
-            ? undefined
-            : String(
-                err?.message || err
-              )
+          "Ses çözümlenemedi."
       });
 
     } finally {
@@ -609,9 +592,9 @@ Konuşmada duyulmayan kelimeleri uydurma.
   }
 );
 
-/* ---------------------------------------------------------
+/* =========================================================
    FRONTEND
---------------------------------------------------------- */
+========================================================= */
 
 app.get(
   "/{*splat}",
@@ -625,9 +608,9 @@ app.get(
   }
 );
 
-/* ---------------------------------------------------------
+/* =========================================================
    SERVER
---------------------------------------------------------- */
+========================================================= */
 
 app.listen(
   port,
