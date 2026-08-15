@@ -32,12 +32,7 @@ body{
   height:100%;
   position:relative;
   background:
-    radial-gradient(
-      circle at 70% 0,
-      #153d4e,
-      #08131d 34%,
-      #03070d 76%
-    );
+    radial-gradient(circle at 70% 0,#153d4e,#08131d 34%,#03070d 76%);
   overflow:hidden
 }
 
@@ -80,12 +75,7 @@ header{
 .eb b{
   font-size:15px;
   letter-spacing:-2px;
-  background:linear-gradient(
-    135deg,
-    #fff,
-    #20dcff,
-    #9d75ff
-  );
+  background:linear-gradient(135deg,#fff,#20dcff,#9d75ff);
   -webkit-background-clip:text;
   color:transparent
 }
@@ -148,13 +138,7 @@ h1{
 
 h1 span{
   display:block;
-  background:
-    linear-gradient(
-      90deg,
-      #fff,
-      var(--c),
-      var(--v)
-    );
+  background:linear-gradient(90deg,#fff,var(--c),var(--v));
   -webkit-background-clip:text;
   color:transparent
 }
@@ -179,8 +163,7 @@ h1 span{
   padding:14px;
   min-height:125px;
   background:#ffffff06;
-  position:relative;
-  cursor:pointer
+  position:relative
 }
 
 .card:active{
@@ -237,7 +220,8 @@ h1 span{
 }
 
 .input:focus{
-  border-color:#20dcff55
+  border-color:#20dcff55;
+  box-shadow:0 0 15px #20dcff0d
 }
 
 .btn{
@@ -246,12 +230,7 @@ h1 span{
   padding:10px 12px;
   font-size:7px;
   font-weight:800;
-  background:
-    linear-gradient(
-      90deg,
-      var(--c),
-      var(--v)
-    );
+  background:linear-gradient(90deg,var(--c),var(--v));
   color:#031018;
   cursor:pointer
 }
@@ -273,8 +252,7 @@ h1 span{
   border-radius:10px;
   padding:8px 10px;
   font-size:7px;
-  margin-bottom:13px;
-  cursor:pointer
+  margin-bottom:13px
 }
 
 .chat{
@@ -305,6 +283,16 @@ h1 span{
   align-self:flex-end;
   background:#12333e;
   color:#e9fbff
+}
+
+.typing{
+  opacity:.65;
+  animation:pulse 1s infinite
+}
+
+@keyframes pulse{
+  0%,100%{opacity:.35}
+  50%{opacity:1}
 }
 
 .task{
@@ -359,6 +347,31 @@ h1 span{
   margin-top:5px
 }
 
+.timeline{
+  display:flex;
+  gap:8px;
+  overflow:auto;
+  padding:5px 0 10px
+}
+
+.year{
+  min-width:105px;
+  border:1px solid var(--line);
+  border-radius:15px;
+  padding:12px;
+  background:#ffffff05
+}
+
+.year b{
+  font-size:14px
+}
+
+.year p{
+  font-size:7px;
+  color:#8191a3;
+  line-height:1.45
+}
+
 .bottom{
   position:fixed;
   z-index:10;
@@ -369,11 +382,7 @@ h1 span{
   display:flex;
   justify-content:center;
   gap:5px;
-  background:
-    linear-gradient(
-      transparent,
-      #03070d 30%
-    )
+  background:linear-gradient(transparent,#03070d 30%)
 }
 
 .nav{
@@ -382,8 +391,7 @@ h1 span{
   color:#8190a0;
   border-radius:12px;
   padding:9px 9px;
-  font-size:6.5px;
-  cursor:pointer
+  font-size:6.5px
 }
 
 .nav.on{
@@ -414,11 +422,49 @@ h1 span{
 .recording{
   box-shadow:
     0 0 0 3px #20dcff33,
-    0 0 30px #20dcff55
+    0 0 30px #20dcff55;
+  color:#20dcff!important
+}
+
+.speaking{
+  box-shadow:
+    0 0 0 3px #9d75ff33,
+    0 0 30px #9d75ff55
 }
 
 .hidden{
   display:none!important
+}
+
+.voice-control{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-top:8px;
+  padding:8px 10px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:#ffffff04
+}
+
+.voice-control span{
+  font-size:7px;
+  color:#8292a3
+}
+
+.toggle{
+  border:1px solid #20dcff44;
+  background:#0c1b24;
+  color:#20dcff;
+  border-radius:9px;
+  padding:6px 9px;
+  font-size:6px;
+  font-weight:800
+}
+
+.toggle.off{
+  color:#8292a3;
+  border-color:#ffffff18
 }
 
 @media(min-width:650px){
@@ -441,10 +487,7 @@ h1 span{
 
 <header>
   <div class="brand">
-    <div class="eb">
-      <b>EB</b>
-    </div>
-
+    <div class="eb"><b>EB</b></div>
     <div>
       <strong>ERKAN LIFE OS</strong>
       <small>PERSONAL DIGITAL INTELLIGENCE</small>
@@ -463,9 +506,7 @@ h1 span{
 
 <section class="view active" id="home">
 
-  <div class="k">
-    ERKAN LIFE OS • V2
-  </div>
+  <div class="k">ERKAN LIFE OS • V2</div>
 
   <h1>
     Hayatın.
@@ -473,9 +514,8 @@ h1 span{
   </h1>
 
   <p class="desc">
-    Gerçek yapay zekâ bağlantısına hazır kişisel
-    dijital yaşam merkezi. Sor, planla, fikir üret
-    ve geleceğini keşfet.
+    Gerçek yapay zekâ bağlantısına hazır kişisel dijital yaşam merkezi.
+    Sor, planla, fikir üret ve geleceğini keşfet.
   </p>
 
   <div class="grid">
@@ -483,36 +523,28 @@ h1 span{
     <div class="card" data-v="today">
       <div class="ico">◎</div>
       <h3>Bugün</h3>
-      <p>
-        Görevlerini yönet ve önceliğini belirle.
-      </p>
+      <p>Görevlerini yönet ve önceliğini belirle.</p>
       <div class="arrow">→</div>
     </div>
 
     <div class="card" data-v="ai">
       <div class="ico">✦</div>
       <h3>ERKAN AI</h3>
-      <p>
-        Gerçek AI ile konuş, düşün ve planla.
-      </p>
+      <p>Gerçek AI ile konuş, düşün ve planla.</p>
       <div class="arrow">→</div>
     </div>
 
     <div class="card" data-v="ideas">
       <div class="ico">◇</div>
       <h3>Fikir Lab</h3>
-      <p>
-        Fikri ürün çerçevesine dönüştür.
-      </p>
+      <p>Fikri ürün çerçevesine dönüştür.</p>
       <div class="arrow">→</div>
     </div>
 
     <div class="card" data-v="future">
       <div class="ico">⌁</div>
       <h3>Gelecek</h3>
-      <p>
-        Teknoloji ve hedefler için keşif.
-      </p>
+      <p>Teknoloji ve hedefler için zaman çizgisi.</p>
       <div class="arrow">→</div>
     </div>
 
@@ -525,39 +557,30 @@ h1 span{
 
 <section class="view" id="today">
 
-  <button class="back" data-v="home">
-    ← ANA
-  </button>
+  <button class="back" data-v="home">← ANA</button>
 
-  <div class="k">
-    BUGÜN
-  </div>
+  <div class="k">BUGÜN</div>
 
   <h1>
     Şimdi ne
-    <br>
     <span>önemli?</span>
   </h1>
 
   <p class="desc">
-    Net görevler, küçük adımlar,
-    görünür ilerleme.
+    Net görevler, küçük adımlar, görünür ilerleme.
   </p>
 
   <div class="panel" id="tasks"></div>
 
   <div class="row">
-
     <input
       class="input"
       id="task"
       placeholder="Yeni görev..."
     >
-
     <button class="btn" id="add">
       EKLE
     </button>
-
   </div>
 
 </section>
@@ -567,13 +590,9 @@ h1 span{
 
 <section class="view" id="ai">
 
-  <button class="back" data-v="home">
-    ← ANA
-  </button>
+  <button class="back" data-v="home">← ANA</button>
 
-  <div class="k">
-    ERKAN AI • GERÇEK API
-  </div>
+  <div class="k">ERKAN AI • GERÇEK API</div>
 
   <h1>
     Sor.
@@ -581,8 +600,8 @@ h1 span{
   </h1>
 
   <p class="desc">
-    Yazabilir veya mikrofonla konuşabilirsin.
-    ERKAN AI cevabını otomatik olarak seslendirebilir.
+    Metinle konuşabilir veya mikrofonla soru sorabilirsin.
+    AI cevabı otomatik olarak seslendirebilir.
   </p>
 
   <div class="panel chat" id="chat">
@@ -594,6 +613,21 @@ h1 span{
 
   </div>
 
+  <div class="voice-control">
+
+    <span>
+      🔊 Otomatik sesli cevap
+    </span>
+
+    <button
+      class="toggle"
+      id="autoVoice"
+    >
+      AÇIK
+    </button>
+
+  </div>
+
   <div class="row">
 
     <input
@@ -602,15 +636,26 @@ h1 span{
       placeholder="Mesajını yaz..."
     >
 
-    <button class="btn" id="send">
+    <button
+      class="btn"
+      id="send"
+    >
       GÖNDER
     </button>
 
-    <button class="btn alt" id="mic">
+    <button
+      class="btn alt"
+      id="mic"
+      title="Mikrofon"
+    >
       🎙
     </button>
 
-    <button class="btn alt" id="listen">
+    <button
+      class="btn alt"
+      id="listen"
+      title="Son cevabı dinle"
+    >
       🔊
     </button>
 
@@ -637,8 +682,7 @@ h1 span{
   </h1>
 
   <p class="desc">
-    Gerçek AI, fikrini problemden MVP'ye
-    kadar analiz eder.
+    Gerçek AI, fikrini problemden MVP'ye kadar analiz eder.
   </p>
 
   <div class="row">
@@ -649,13 +693,19 @@ h1 span{
       placeholder="Örn. evlerde enerji tasarrufu sistemi"
     >
 
-    <button class="btn" id="analyze">
+    <button
+      class="btn"
+      id="analyze"
+    >
       ANALİZ
     </button>
 
   </div>
 
-  <div class="flow" id="flow"></div>
+  <div
+    class="flow"
+    id="flow"
+  ></div>
 
 </section>
 
@@ -674,13 +724,12 @@ h1 span{
 
   <h1>
     Bugünden
-    <br>
     <span>yarına bak.</span>
   </h1>
 
   <p class="desc">
-    AI ile belirli bir alanın olası
-    gelişmelerini sorgulayabileceğin keşif katmanı.
+    AI ile belirli bir alanın olası gelişmelerini
+    sorgulayabileceğin keşif katmanı.
   </p>
 
   <div class="row">
@@ -691,13 +740,19 @@ h1 span{
       placeholder="Örn. yapay zekâ, enerji, robotik"
     >
 
-    <button class="btn" id="scan">
+    <button
+      class="btn"
+      id="scan"
+    >
       KEŞFET
     </button>
 
   </div>
 
-  <div class="panel" id="futureOut">
+  <div
+    class="panel"
+    id="futureOut"
+  >
     Bir alan yaz ve keşfet.
   </div>
 
@@ -706,27 +761,40 @@ h1 span{
 </main>
 
 
-<!-- ALT MENÜ -->
-
 <nav class="bottom">
 
-  <button class="nav on" data-v="home">
+  <button
+    class="nav on"
+    data-v="home"
+  >
     ⌂ ANA
   </button>
 
-  <button class="nav" data-v="today">
+  <button
+    class="nav"
+    data-v="today"
+  >
     ◎ BUGÜN
   </button>
 
-  <button class="nav" data-v="ai">
+  <button
+    class="nav"
+    data-v="ai"
+  >
     ✦ AI
   </button>
 
-  <button class="nav" data-v="ideas">
+  <button
+    class="nav"
+    data-v="ideas"
+  >
     ◇ FİKİR
   </button>
 
-  <button class="nav" data-v="future">
+  <button
+    class="nav"
+    data-v="future"
+  >
     ⌁ GELECEK
   </button>
 
@@ -752,17 +820,21 @@ let current = "home";
 function show(id){
 
   views.forEach(v => {
+
     v.classList.toggle(
       "active",
       v.id === id
     );
+
   });
 
   nav.forEach(n => {
+
     n.classList.toggle(
       "on",
       n.dataset.v === id
     );
+
   });
 
   current = id;
@@ -783,15 +855,11 @@ document
    STATUS
 ========================================================= */
 
+const statusEl =
+  document.getElementById("status");
+
 function setStatus(text){
-
-  const el =
-    document.getElementById("status");
-
-  if(el){
-    el.textContent = text;
-  }
-
+  statusEl.textContent = text;
 }
 
 
@@ -809,11 +877,9 @@ async function api(
       url,
       {
         ...opts,
-
         headers:{
           "Content-Type":
             "application/json",
-
           ...(opts.headers || {})
         }
       }
@@ -834,7 +900,6 @@ async function api(
   }
 
   return data;
-
 }
 
 
@@ -842,152 +907,41 @@ async function api(
    CHAT HISTORY
 ========================================================= */
 
-let history = [];
+let conversationHistory = [];
 
 
 /* =========================================================
-   TEXT TO SPEECH
-   AI CEVABINI SESLENDİR
+   AUTOMATIC VOICE
 ========================================================= */
+
+let autoVoiceEnabled = true;
 
 let currentAudio = null;
 
-async function speakText(text){
+const autoVoiceButton =
+  document.getElementById(
+    "autoVoice"
+  );
 
-  if(
-    !text ||
-    !String(text).trim()
-  ){
-    return;
-  }
 
-  try{
+function updateVoiceButton(){
 
-    setStatus(
-      "SES HAZIRLANIYOR"
+  if(autoVoiceEnabled){
+
+    autoVoiceButton.textContent =
+      "AÇIK";
+
+    autoVoiceButton.classList.remove(
+      "off"
     );
 
-    if(currentAudio){
+  }else{
 
-      try{
-        currentAudio.pause();
-        currentAudio.currentTime = 0;
-      }catch(e){}
+    autoVoiceButton.textContent =
+      "KAPALI";
 
-      currentAudio = null;
-    }
-
-    const response =
-      await fetch(
-        "/api/speech",
-        {
-          method:"POST",
-
-          headers:{
-            "Content-Type":
-              "application/json"
-          },
-
-          body:JSON.stringify({
-            text:String(text)
-              .trim()
-          })
-        }
-      );
-
-    if(!response.ok){
-
-      let errorText =
-        "Ses üretilemedi.";
-
-      try{
-
-        const data =
-          await response.json();
-
-        if(data.error){
-          errorText =
-            data.error;
-        }
-
-        if(data.detail){
-          console.error(
-            "TTS detay:",
-            data.detail
-          );
-        }
-
-      }catch(e){}
-
-      throw new Error(
-        errorText
-      );
-
-    }
-
-    const blob =
-      await response.blob();
-
-    if(
-      !blob ||
-      blob.size === 0
-    ){
-      throw new Error(
-        "Ses dosyası boş geldi."
-      );
-    }
-
-    const url =
-      URL.createObjectURL(blob);
-
-    const audio =
-      new Audio(url);
-
-    currentAudio = audio;
-
-    audio.onended = () => {
-
-      URL.revokeObjectURL(url);
-
-      if(currentAudio === audio){
-        currentAudio = null;
-      }
-
-      setStatus(
-        "AI HAZIR"
-      );
-
-    };
-
-    audio.onerror = () => {
-
-      URL.revokeObjectURL(url);
-
-      if(currentAudio === audio){
-        currentAudio = null;
-      }
-
-      setStatus(
-        "SES HATASI"
-      );
-
-    };
-
-    await audio.play();
-
-    setStatus(
-      "AI KONUŞUYOR"
-    );
-
-  }catch(error){
-
-    console.error(
-      "Ses oynatma hatası:",
-      error
-    );
-
-    setStatus(
-      "SES HATASI"
+    autoVoiceButton.classList.add(
+      "off"
     );
 
   }
@@ -995,8 +949,21 @@ async function speakText(text){
 }
 
 
+autoVoiceButton.onclick = () => {
+
+  autoVoiceEnabled =
+    !autoVoiceEnabled;
+
+  updateVoiceButton();
+
+};
+
+
+updateVoiceButton();
+
+
 /* =========================================================
-   AI ASK
+   AI CHAT
 ========================================================= */
 
 async function ask(
@@ -1018,38 +985,39 @@ async function ask(
 
           message:text,
 
-          history:history,
+          history:
+            conversationHistory,
 
-          mode:mode
+          mode
 
         })
+
       }
     );
 
-  const answer =
-    data.text ||
-    "Yanıt üretilemedi.";
 
-  history.push(
+  conversationHistory.push(
     {
       role:"user",
       content:text
     },
     {
       role:"assistant",
-      content:answer
+      content:data.text
     }
   );
 
-  history =
-    history.slice(-12);
+
+  conversationHistory =
+    conversationHistory.slice(-12);
+
 
   setStatus(
     "AI HAZIR"
   );
 
-  return answer;
 
+  return data.text;
 }
 
 
@@ -1084,22 +1052,201 @@ function bubble(
     chat.scrollHeight;
 
   return b;
+}
+
+
+/* =========================================================
+   SPEECH
+========================================================= */
+
+async function speakText(
+  text,
+  automatic = false
+){
+
+  if(!text || !text.trim()){
+    return;
+  }
+
+  try{
+
+    setStatus(
+      "SES HAZIRLANIYOR"
+    );
+
+
+    if(currentAudio){
+
+      try{
+        currentAudio.pause();
+      }catch(_){}
+
+      currentAudio = null;
+
+    }
+
+
+    const response =
+      await fetch(
+        "/api/speech",
+        {
+          method:"POST",
+
+          headers:{
+            "Content-Type":
+              "application/json"
+          },
+
+          body:
+            JSON.stringify({
+              text:
+                text
+                  .trim()
+                  .slice(0,4096)
+            })
+        }
+      );
+
+
+    if(!response.ok){
+
+      let errorText =
+        "Ses üretilemedi.";
+
+      try{
+
+        const errorData =
+          await response.json();
+
+        errorText =
+          errorData.error ||
+          errorText;
+
+      }catch(_){}
+
+      throw new Error(
+        errorText
+      );
+
+    }
+
+
+    const blob =
+      await response.blob();
+
+
+    if(!blob.size){
+
+      throw new Error(
+        "Boş ses dosyası geldi."
+      );
+
+    }
+
+
+    const url =
+      URL.createObjectURL(
+        blob
+      );
+
+
+    const audio =
+      new Audio(url);
+
+
+    currentAudio =
+      audio;
+
+
+    audio.preload =
+      "auto";
+
+
+    audio.onplay = () => {
+
+      setStatus(
+        "KONUŞUYOR"
+      );
+
+    };
+
+
+    audio.onended = () => {
+
+      URL.revokeObjectURL(
+        url
+      );
+
+      if(
+        currentAudio === audio
+      ){
+
+        currentAudio =
+          null;
+
+      }
+
+      setStatus(
+        "AI HAZIR"
+      );
+
+    };
+
+
+    audio.onerror = () => {
+
+      URL.revokeObjectURL(
+        url
+      );
+
+      if(
+        currentAudio === audio
+      ){
+
+        currentAudio =
+          null;
+
+      }
+
+      setStatus(
+        "SES HATASI"
+      );
+
+    };
+
+
+    await audio.play();
+
+  }catch(error){
+
+    console.error(
+      "Speech error:",
+      error
+    );
+
+    setStatus(
+      "SES HATASI"
+    );
+
+    if(!automatic){
+
+      alert(
+        error.message ||
+        "Ses üretilemedi."
+      );
+
+    }
+
+  }
 
 }
 
 
 /* =========================================================
-   GÖNDER
-   AI CEVABI OTOMATİK SESLENDİRİLİYOR
+   SEND BUTTON
 ========================================================= */
 
-let sending = false;
-
 async function sendMessage(){
-
-  if(sending){
-    return;
-  }
 
   const input =
     document.getElementById(
@@ -1109,45 +1256,75 @@ async function sendMessage(){
   const text =
     input.value.trim();
 
+
   if(!text){
     return;
   }
 
-  sending = true;
 
   input.value = "";
+
 
   bubble(
     text,
     "me"
   );
 
+
+  const typing =
+    bubble(
+      "AI düşünüyor...",
+      "ai typing"
+    );
+
+
   try{
 
     const answer =
-      await ask(text);
+      await ask(
+        text
+      );
+
+
+    typing.remove();
+
 
     bubble(
       answer,
       "ai"
     );
 
+
     /*
-     * ÖNEMLİ:
-     * AI cevabı geldikten hemen sonra
-     * otomatik olarak seslendirilir.
+     * EN ÖNEMLİ KISIM:
+     *
+     * AI cevabı gelir gelmez
+     * otomatik seslendirme.
      */
 
-    await speakText(
+    if(
+      autoVoiceEnabled &&
       answer
-    );
+    ){
+
+      await speakText(
+        answer,
+        true
+      );
+
+    }else{
+
+      setStatus(
+        "AI HAZIR"
+      );
+
+    }
+
 
   }catch(error){
 
-    console.error(
-      "Chat hatası:",
-      error
-    );
+    typing.remove();
+
 
     bubble(
       "Bağlantı kurulamadı: " +
@@ -1155,13 +1332,10 @@ async function sendMessage(){
       "ai"
     );
 
+
     setStatus(
       "BAĞLANTI HATASI"
     );
-
-  }finally{
-
-    sending = false;
 
   }
 
@@ -1170,18 +1344,20 @@ async function sendMessage(){
 
 document
   .getElementById("send")
-  .onclick = sendMessage;
+  .onclick =
+  sendMessage;
 
 
 document
   .getElementById("msg")
-  .onkeydown = e => {
+  .onkeydown =
+  event => {
 
     if(
-      e.key === "Enter"
+      event.key === "Enter"
     ){
 
-      e.preventDefault();
+      event.preventDefault();
 
       sendMessage();
 
@@ -1191,13 +1367,13 @@ document
 
 
 /* =========================================================
-   HOPARLÖR
-   SON AI CEVABINI TEKRAR OKU
+   MANUAL LISTEN
 ========================================================= */
 
 document
   .getElementById("listen")
-  .onclick = async () => {
+  .onclick =
+  async () => {
 
     const bubbles =
       [
@@ -1206,17 +1382,26 @@ document
         )
       ];
 
-    if(!bubbles.length){
-      return;
-    }
-
     const last =
       bubbles[
         bubbles.length - 1
       ];
 
+
+    if(!last){
+
+      alert(
+        "Dinlenecek AI cevabı yok."
+      );
+
+      return;
+
+    }
+
+
     await speakText(
-      last.textContent
+      last.textContent,
+      false
     );
 
   };
@@ -1230,25 +1415,26 @@ let recorder = null;
 
 let chunks = [];
 
+let microphoneStream = null;
 
-document
-  .getElementById("mic")
-  .onclick = async () => {
 
-    const button =
-      document.getElementById(
-        "mic"
-      );
+const micButton =
+  document.getElementById(
+    "mic"
+  );
+
+
+micButton.onclick =
+  async () => {
 
     /*
-     * Eğer zaten kayıt yapıyorsa
-     * ikinci basış kaydı bitirir.
+     * Zaten kayıt yapıyorsak
+     * durdur.
      */
 
     if(
       recorder &&
-      recorder.state ===
-      "recording"
+      recorder.state === "recording"
     ){
 
       recorder.stop();
@@ -1257,31 +1443,55 @@ document
 
     }
 
+
     try{
 
-      if(
-        !navigator.mediaDevices ||
-        !navigator.mediaDevices.getUserMedia
-      ){
-
-        throw new Error(
-          "Bu cihaz/tarayıcı mikrofon erişimini desteklemiyor."
-        );
-
-      }
-
-      const stream =
-        await navigator.mediaDevices
+      microphoneStream =
+        await navigator
+          .mediaDevices
           .getUserMedia({
             audio:true
           });
 
+
       chunks = [];
 
+
+      let mimeType =
+        "";
+
+
+      if(
+        MediaRecorder.isTypeSupported(
+          "audio/webm;codecs=opus"
+        )
+      ){
+
+        mimeType =
+          "audio/webm;codecs=opus";
+
+      }else if(
+        MediaRecorder.isTypeSupported(
+          "audio/webm"
+        )
+      ){
+
+        mimeType =
+          "audio/webm";
+
+      }
+
+
       recorder =
-        new MediaRecorder(
-          stream
-        );
+        mimeType
+          ? new MediaRecorder(
+              microphoneStream,
+              {mimeType}
+            )
+          : new MediaRecorder(
+              microphoneStream
+            );
+
 
       recorder.ondataavailable =
         event => {
@@ -1305,38 +1515,36 @@ document
 
           try{
 
-            stream
-              .getTracks()
+            microphoneStream
+              ?.getTracks()
               .forEach(
                 track =>
                   track.stop()
               );
 
-            button
-              .classList
-              .remove(
-                "recording"
-              );
+
+            micButton.classList.remove(
+              "recording"
+            );
+
 
             setStatus(
               "SES ÇÖZÜMLENİYOR"
             );
 
-            const mime =
-              recorder.mimeType ||
-              "audio/webm";
 
-            const blob =
+            const audioBlob =
               new Blob(
                 chunks,
                 {
-                  type:mime
+                  type:
+                    recorder.mimeType ||
+                    "audio/webm"
                 }
               );
 
-            if(
-              !blob.size
-            ){
+
+            if(!audioBlob.size){
 
               throw new Error(
                 "Ses kaydı boş."
@@ -1344,23 +1552,27 @@ document
 
             }
 
-            const form =
+
+            const formData =
               new FormData();
 
-            form.append(
+
+            formData.append(
               "audio",
-              blob,
+              audioBlob,
               "voice.webm"
             );
+
 
             const response =
               await fetch(
                 "/api/transcribe",
                 {
                   method:"POST",
-                  body:form
+                  body:formData
                 }
               );
+
 
             const data =
               await response
@@ -1369,9 +1581,8 @@ document
                   () => ({})
                 );
 
-            if(
-              !response.ok
-            ){
+
+            if(!response.ok){
 
               throw new Error(
                 data.error ||
@@ -1380,50 +1591,65 @@ document
 
             }
 
-            const transcript =
-              data.text ||
-              "";
 
-            if(
-              !transcript.trim()
-            ){
+            /*
+             * Sunucudan gelen yazıyı
+             * mesaj kutusuna koy.
+             */
+
+            const messageInput =
+              document.getElementById(
+                "msg"
+              );
+
+
+            const transcript =
+              String(
+                data.text ||
+                data.transcript ||
+                ""
+              ).trim();
+
+
+            if(!transcript){
 
               throw new Error(
-                "Konuşma metne çevrilemedi."
+                "Konuşma yazıya dönüştürülemedi."
               );
 
             }
 
-            /*
-             * Mikrofon sonucu input'a yazılır.
-             */
 
-            document
-              .getElementById(
-                "msg"
-              )
-              .value =
-                transcript;
+            messageInput.value =
+              transcript;
+
 
             /*
-             * VE OTOMATİK OLARAK GÖNDERİLİR.
+             * EN ÖNEMLİ KISIM:
+             *
+             * Mikrofon -> yazı ->
+             * otomatik gönder.
              */
 
             await sendMessage();
 
+
           }catch(error){
 
             console.error(
-              "Mikrofon hatası:",
+              "Microphone error:",
               error
             );
+
 
             setStatus(
               "MİKROFON HATASI"
             );
 
+
             alert(
-              error.message
+              error.message ||
+              "Ses çözümlenemedi."
             );
 
           }
@@ -1433,11 +1659,11 @@ document
 
       recorder.start();
 
-      button
-        .classList
-        .add(
-          "recording"
-        );
+
+      micButton.classList.add(
+        "recording"
+      );
+
 
       setStatus(
         "DİNLİYOR"
@@ -1445,7 +1671,8 @@ document
 
 
       /*
-       * Maksimum 12 saniye kayıt.
+       * Güvenlik için maksimum
+       * 15 saniyelik kayıt.
        */
 
       setTimeout(
@@ -1462,22 +1689,25 @@ document
           }
 
         },
-        12000
+        15000
       );
+
 
     }catch(error){
 
       console.error(
-        "Mikrofon başlatılamadı:",
+        "Microphone permission:",
         error
       );
+
 
       setStatus(
         "MİKROFON HATASI"
       );
 
+
       alert(
-        "Mikrofon izni gerekli.\n\n" +
+        "Mikrofon izni gerekli. " +
         error.message
       );
 
@@ -1512,57 +1742,42 @@ const tasks = [
 
 function renderTasks(){
 
-  const container =
-    document.getElementById(
-      "tasks"
-    );
-
-  container.innerHTML =
+  document.getElementById(
+    "tasks"
+  ).innerHTML =
     tasks
       .map(
         (task,index) => `
-
           <div
-            class="task ${
-              task[1]
-                ? "done"
-                : ""
-            }"
+            class="task ${task[1] ? "done" : ""}"
             data-i="${index}"
           >
 
             <button class="check">
-              ${
-                task[1]
-                  ? "✓"
-                  : ""
-              }
+              ${task[1] ? "✓" : ""}
             </button>
 
             <span>
-              ${task[0]}
+              ${escapeHtml(task[0])}
             </span>
 
           </div>
-
         `
       )
       .join("");
 
 
   document
-    .querySelectorAll(
-      ".task"
-    )
+    .querySelectorAll(".task")
     .forEach(
-      item => {
+      element => {
 
-        item.onclick =
+        element.onclick =
           () => {
 
             const index =
               Number(
-                item.dataset.i
+                element.dataset.i
               );
 
             tasks[index][1] =
@@ -1578,12 +1793,25 @@ function renderTasks(){
 }
 
 
+function escapeHtml(text){
+
+  return String(text)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+
+}
+
+
 renderTasks();
 
 
 document
   .getElementById("add")
-  .onclick = () => {
+  .onclick =
+  () => {
 
     const input =
       document.getElementById(
@@ -1593,29 +1821,33 @@ document
     const value =
       input.value.trim();
 
-    if(!value){
-      return;
+
+    if(value){
+
+      tasks.push(
+        [
+          value,
+          false
+        ]
+      );
+
+      input.value = "";
+
+      renderTasks();
+
     }
-
-    tasks.push([
-      value,
-      false
-    ]);
-
-    input.value = "";
-
-    renderTasks();
 
   };
 
 
 /* =========================================================
-   FİKİR LAB
+   IDEA LAB
 ========================================================= */
 
 document
   .getElementById("analyze")
-  .onclick = async () => {
+  .onclick =
+  async () => {
 
     const input =
       document.getElementById(
@@ -1625,19 +1857,23 @@ document
     const value =
       input.value.trim();
 
+
     if(!value){
       return;
     }
+
 
     setStatus(
       "FİKİR ANALİZ EDİLİYOR"
     );
 
+
     try{
 
       const answer =
         await ask(
-          `Fikir Laboratuvarı: "${value}".
+          `Fikir Laboratuvarı:
+"${value}"
 
 Bu fikri 6 kısa bölümde değerlendir:
 
@@ -1652,48 +1888,31 @@ Türkçe, net ve uygulanabilir yaz.`,
           "idea"
         );
 
-      const flow =
-        document.getElementById(
-          "flow"
-        );
 
-      flow.innerHTML =
-        `
+      document.getElementById(
+        "flow"
+      ).innerHTML = `
+
         <div class="step">
 
-          <b>
-            AI ÜRÜN ANALİZİ
-          </b>
+          <b>AI ÜRÜN ANALİZİ</b>
 
-          <span></span>
+          <span>
+            ${escapeHtml(answer)
+              .replace(/\n/g,"<br>")}
+          </span>
 
         </div>
-        `;
 
-      flow
-        .querySelector(
-          "span"
-        )
-        .textContent =
-          answer;
+      `;
 
-      show(
-        "ideas"
+
+      setStatus(
+        "AI HAZIR"
       );
 
-      /*
-       * Fikir analizini de seslendir.
-       */
-
-      await speakText(
-        answer
-      );
 
     }catch(error){
-
-      console.error(
-        error
-      );
 
       alert(
         error.message
@@ -1709,12 +1928,13 @@ Türkçe, net ve uygulanabilir yaz.`,
 
 
 /* =========================================================
-   GELECEK
+   FUTURE RADAR
 ========================================================= */
 
 document
   .getElementById("scan")
-  .onclick = async () => {
+  .onclick =
+  async () => {
 
     const input =
       document.getElementById(
@@ -1724,47 +1944,60 @@ document
     const value =
       input.value.trim();
 
+
     if(!value){
       return;
     }
+
+
+    setStatus(
+      "GELECEK ANALİZ EDİLİYOR"
+    );
+
 
     try{
 
       const answer =
         await ask(
-          `Gelecek Radarı: ${value}.
+          `Gelecek Radarı:
 
-Önümüzdeki 3, 5 ve 10 yıl için
-olası teknolojik gelişmeleri,
-fırsatları ve belirsizlikleri
+${value}
+
+Önümüzdeki 3, 5 ve 10 yıl için:
+
+- olası teknolojik gelişmeleri
+- fırsatları
+- riskleri
+- belirsizlikleri
+
 kısa ve temkinli biçimde değerlendir.`,
           "future"
         );
 
-      const output =
-        document.getElementById(
-          "futureOut"
-        );
 
-      output.textContent =
-        answer;
+      document.getElementById(
+        "futureOut"
+      ).innerHTML =
+        escapeHtml(answer)
+          .replace(
+            /\n/g,
+            "<br>"
+          );
 
-      /*
-       * Gelecek analizini de seslendir.
-       */
 
-      await speakText(
-        answer
+      setStatus(
+        "AI HAZIR"
       );
+
 
     }catch(error){
 
-      console.error(
-        error
-      );
-
       alert(
         error.message
+      );
+
+      setStatus(
+        "HATA"
       );
 
     }
@@ -1792,7 +2025,7 @@ let D;
 let points = [];
 
 
-function resize(){
+function resizeCanvas(){
 
   D =
     window.devicePixelRatio ||
@@ -1804,11 +2037,13 @@ function resize(){
   H =
     window.innerHeight;
 
+
   canvas.width =
     W * D;
 
   canvas.height =
     H * D;
+
 
   ctx.setTransform(
     D,
@@ -1819,6 +2054,7 @@ function resize(){
     0
   );
 
+
   points =
     Array.from(
       {
@@ -1826,17 +2062,14 @@ function resize(){
       },
       () => ({
         x:
-          Math.random() *
-          W,
+          Math.random() * W,
 
         y:
-          Math.random() *
-          H,
+          Math.random() * H,
 
         v:
           .1 +
-          Math.random() *
-          .35,
+          Math.random() * .35,
 
         r:
           .3 +
@@ -1847,7 +2080,7 @@ function resize(){
 }
 
 
-function animate(){
+function animateBackground(){
 
   ctx.clearRect(
     0,
@@ -1856,56 +2089,64 @@ function animate(){
     H
   );
 
+
   for(
-    const p of points
+    const point of points
   ){
 
-    p.y += p.v;
+    point.y +=
+      point.v;
+
 
     if(
-      p.y > H
+      point.y > H
     ){
 
-      p.y = -2;
+      point.y = -2;
 
     }
+
 
     ctx.fillStyle =
       "rgba(32,220,255,.3)";
 
+
     ctx.beginPath();
 
+
     ctx.arc(
-      p.x,
-      p.y,
-      p.r,
+      point.x,
+      point.y,
+      point.r,
       0,
-      7
+      Math.PI * 2
     );
+
 
     ctx.fill();
 
   }
 
+
   requestAnimationFrame(
-    animate
+    animateBackground
   );
 
 }
 
 
-resize();
+resizeCanvas();
 
 window.addEventListener(
   "resize",
-  resize
+  resizeCanvas
 );
 
-animate();
+animateBackground();
 
 
 /* =========================================================
-   BAŞLANGIÇ
+   INITIAL STATUS
 ========================================================= */
 
 setStatus(
