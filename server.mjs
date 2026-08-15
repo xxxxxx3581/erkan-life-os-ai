@@ -6,9 +6,12 @@ import fs from "node:fs";
 import path from "node:path";
 
 const app = express();
-const port = process.env.PORT || 3000;
 
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+const port =
+  process.env.PORT || 3000;
+
+const GEMINI_API_KEY =
+  process.env.GEMINI_API_KEY;
 
 const AI_MODEL =
   process.env.GEMINI_MODEL ||
@@ -19,33 +22,51 @@ const TTS_MODEL =
   "gemini-2.5-flash-preview-tts";
 
 if (!GEMINI_API_KEY) {
-  console.warn("GEMINI_API_KEY bulunamadi.");
+  console.warn(
+    "GEMINI_API_KEY bulunamadi."
+  );
 }
 
-const genai = new GoogleGenAI({
-  apiKey: GEMINI_API_KEY
-});
+const genai =
+  new GoogleGenAI({
+    apiKey: GEMINI_API_KEY
+  });
 
 app.use(
   express.json({
-    limit: "2mb"
+    limit: "4mb"
   })
 );
 
-const tmpDir = path.resolve("tmp");
 
-if (!fs.existsSync(tmpDir)) {
-  fs.mkdirSync(tmpDir, {
-    recursive: true
-  });
+/* =========================================================
+   TEMPORARY FILES
+========================================================= */
+
+const tmpDir =
+  path.resolve("tmp");
+
+if (
+  !fs.existsSync(tmpDir)
+) {
+  fs.mkdirSync(
+    tmpDir,
+    {
+      recursive: true
+    }
+  );
 }
 
-const upload = multer({
-  dest: tmpDir,
-  limits: {
-    fileSize: 15 * 1024 * 1024
-  }
-});
+const upload =
+  multer({
+    dest: tmpDir,
+
+    limits: {
+      fileSize:
+        15 * 1024 * 1024
+    }
+  });
+
 
 /* =========================================================
    AI SYSTEM
@@ -60,8 +81,7 @@ Kibar, doğal, anlaşılır, kısa ama faydalı cevaplar ver.
 
 Gereksiz uzun listeler verme.
 
-Kullanıcının amacını anlamaya çalış ve uygulanabilir
-cevaplar üret.
+Kullanıcının amacını anlamaya çalış ve uygulanabilir cevaplar üret.
 
 Fikir Laboratuvarı isteklerinde:
 
@@ -82,139 +102,213 @@ Kendini insan gibi tanıtma.
 Gerektiğinde bir yapay zekâ asistanı olduğunu açıkça belirt.
 `;
 
+
 /* =========================================================
    HEALTH
 ========================================================= */
 
-app.get("/api/health", (_req, res) => {
-  res.json({
-    ok: true,
-    service: "ERKAN LIFE OS",
-    ai: Boolean(GEMINI_API_KEY),
-    model: AI_MODEL,
-    ttsModel: TTS_MODEL
-  });
-});
+app.get(
+  "/api/health",
+  (_req, res) => {
+
+    res.json({
+      ok: true,
+      service:
+        "ERKAN LIFE OS",
+      ai:
+        Boolean(
+          GEMINI_API_KEY
+        ),
+      model:
+        AI_MODEL,
+      ttsModel:
+        TTS_MODEL
+    });
+
+  }
+);
+
 
 /* =========================================================
    CHAT
 ========================================================= */
 
-app.post("/api/chat", async (req, res) => {
-  try {
-    const {
-      message,
-      history = [],
-      mode = "assistant"
-    } = req.body || {};
+app.post(
+  "/api/chat",
+  async (req, res) => {
 
-    if (!message || !String(message).trim()) {
-      return res.status(400).json({
-        error: "Mesaj boş olamaz."
-      });
-    }
+    try {
 
-    if (!GEMINI_API_KEY) {
-      return res.status(500).json({
-        error: "GEMINI_API_KEY tanımlı değil."
-      });
-    }
+      const {
+        message,
+        history = [],
+        mode = "assistant"
+      } =
+        req.body || {};
 
-    const safeHistory =
-      Array.isArray(history)
-        ? history
-            .slice(-12)
-            .map((item) => ({
-              role:
-                item.role === "assistant"
-                  ? "model"
-                  : "user",
-              parts: [
-                {
-                  text: String(
-                    item.content || ""
-                  ).slice(0, 4000)
-                }
-              ]
-            }))
-        : [];
+      if (
+        !message ||
+        !String(message).trim()
+      ) {
 
-    const modeHint =
-      {
-        assistant:
-          "Genel kişisel asistan gibi yardımcı ol.",
+        return res
+          .status(400)
+          .json({
+            error:
+              "Mesaj boş olamaz."
+          });
 
-        idea:
-          "Fikri ürünleştirme ve MVP açısından değerlendir.",
-
-        today:
-          "Günlük plan ve önceliklendirme konusunda yardımcı ol.",
-
-        future:
-          "Gelecek teknolojilerini ve olası senaryoları temkinli biçimde değerlendir."
-      }[mode] ||
-      "Genel kişisel asistan gibi yardımcı ol.";
-
-    const contents = [
-      ...safeHistory,
-      {
-        role: "user",
-        parts: [
-          {
-            text: String(message).trim()
-          }
-        ]
       }
-    ];
 
-    console.log(
-      "AI başlatılıyor:",
-      AI_MODEL
-    );
+      if (
+        !GEMINI_API_KEY
+      ) {
 
-    const response =
-      await genai.models.generateContent({
-        model: AI_MODEL,
-        contents,
-        config: {
-          systemInstruction:
-            developer +
-            "\n\nMod: " +
-            modeHint,
+        return res
+          .status(500)
+          .json({
+            error:
+              "GEMINI_API_KEY tanımlı değil."
+          });
 
-          temperature: 0.7,
+      }
 
-          maxOutputTokens: 700
+      const safeHistory =
+        Array.isArray(history)
+          ? history
+              .slice(-12)
+              .map(
+                (item) => ({
+                  role:
+                    item.role ===
+                    "assistant"
+                      ? "model"
+                      : "user",
+
+                  parts: [
+                    {
+                      text:
+                        String(
+                          item.content ||
+                          ""
+                        ).slice(
+                          0,
+                          4000
+                        )
+                    }
+                  ]
+                })
+              )
+          : [];
+
+      const modeHint =
+        {
+          assistant:
+            "Genel kişisel asistan gibi yardımcı ol.",
+
+          idea:
+            "Fikri ürünleştirme ve MVP açısından değerlendir.",
+
+          today:
+            "Günlük plan ve önceliklendirme konusunda yardımcı ol.",
+
+          future:
+            "Gelecek teknolojilerini ve olası senaryoları temkinli biçimde değerlendir."
+        }[mode] ||
+        "Genel kişisel asistan gibi yardımcı ol.";
+
+      const contents = [
+        ...safeHistory,
+
+        {
+          role:
+            "user",
+
+          parts: [
+            {
+              text:
+                String(
+                  message
+                ).trim()
+            }
+          ]
         }
+      ];
+
+      console.log(
+        "AI başlatılıyor:",
+        AI_MODEL
+      );
+
+      const response =
+        await genai.models.generateContent({
+
+          model:
+            AI_MODEL,
+
+          contents,
+
+          config: {
+
+            systemInstruction:
+              developer +
+              "\n\nMod: " +
+              modeHint,
+
+            temperature:
+              0.7,
+
+            maxOutputTokens:
+              700
+
+          }
+
+        });
+
+      const text =
+        response.text ||
+        "Yanıt üretilemedi.";
+
+      console.log(
+        "AI tamamlandı."
+      );
+
+      return res.json({
+        text,
+
+        responseId:
+          response.responseId ||
+          null
       });
 
-    const text =
-      response.text ||
-      "Yanıt üretilemedi.";
+    } catch (err) {
 
-    console.log(
-      "AI tamamlandı."
-    );
+      console.error(
+        "Gemini chat error:",
+        err
+      );
 
-    return res.json({
-      text,
-      responseId:
-        response.responseId || null
-    });
+      const status =
+        err?.status === 429
+          ? 429
+          : 500;
 
-  } catch (err) {
+      return res
+        .status(status)
+        .json({
 
-    console.error(
-      "Gemini chat error:",
-      err
-    );
+          error:
+            err?.status === 429
+              ? "Gemini kullanım kotası şu anda dolu. Lütfen kota yenilendiğinde tekrar deneyin."
+              : "AI bağlantısında bir sorun oluştu."
 
-    return res.status(500).json({
-      error:
-        "AI bağlantısında bir sorun oluştu."
-    });
+        });
+
+    }
+
   }
-});
+);
+
 
 /* =========================================================
    PCM -> WAV
@@ -226,7 +320,9 @@ function pcmToWav(
   channels = 1,
   bitsPerSample = 16
 ) {
-  const header = Buffer.alloc(44);
+
+  const header =
+    Buffer.alloc(44);
 
   const byteRate =
     sampleRate *
@@ -239,16 +335,26 @@ function pcmToWav(
     bitsPerSample /
     8;
 
-  header.write("RIFF", 0);
+  header.write(
+    "RIFF",
+    0
+  );
 
   header.writeUInt32LE(
-    36 + pcmBuffer.length,
+    36 +
+      pcmBuffer.length,
     4
   );
 
-  header.write("WAVE", 8);
+  header.write(
+    "WAVE",
+    8
+  );
 
-  header.write("fmt ", 12);
+  header.write(
+    "fmt ",
+    12
+  );
 
   header.writeUInt32LE(
     16,
@@ -285,7 +391,10 @@ function pcmToWav(
     34
   );
 
-  header.write("data", 36);
+  header.write(
+    "data",
+    36
+  );
 
   header.writeUInt32LE(
     pcmBuffer.length,
@@ -296,7 +405,9 @@ function pcmToWav(
     header,
     pcmBuffer
   ]);
+
 }
+
 
 /* =========================================================
    TEXT TO SPEECH
@@ -308,21 +419,36 @@ app.post(
 
     try {
 
-      const { text } =
+      const {
+        text
+      } =
         req.body || {};
 
-      if (!text || !String(text).trim()) {
-        return res.status(400).json({
-          error:
-            "Ses metni boş olamaz."
-        });
+      if (
+        !text ||
+        !String(text).trim()
+      ) {
+
+        return res
+          .status(400)
+          .json({
+            error:
+              "Ses metni boş olamaz."
+          });
+
       }
 
-      if (!GEMINI_API_KEY) {
-        return res.status(500).json({
-          error:
-            "GEMINI_API_KEY tanımlı değil."
-        });
+      if (
+        !GEMINI_API_KEY
+      ) {
+
+        return res
+          .status(500)
+          .json({
+            error:
+              "GEMINI_API_KEY tanımlı değil."
+          });
+
       }
 
       console.log(
@@ -332,7 +458,9 @@ app.post(
 
       const response =
         await genai.models.generateContent({
-          model: TTS_MODEL,
+
+          model:
+            TTS_MODEL,
 
           contents: [
             {
@@ -342,27 +470,42 @@ app.post(
                     "Türkçe olarak doğal, sıcak, anlaşılır ve akıcı bir erkek anlatıcı gibi oku. " +
                     "Normal konuşma hızında konuş. " +
                     "Cümleler arasında doğal kısa duraklamalar bırak.\n\n" +
-                    String(text)
+                    String(
+                      text
+                    )
                       .trim()
-                      .slice(0, 4096)
+                      .slice(
+                        0,
+                        4096
+                      )
                 }
               ]
             }
           ],
 
           config: {
+
             responseModalities: [
               "AUDIO"
             ],
 
             speechConfig: {
+
               voiceConfig: {
+
                 prebuiltVoiceConfig: {
-                  voiceName: "Kore"
+
+                  voiceName:
+                    "Kore"
+
                 }
+
               }
+
             }
+
           }
+
         });
 
       console.log(
@@ -372,8 +515,8 @@ app.post(
       const parts =
         response
           ?.candidates?.[0]
-          ?.content
-          ?.parts || [];
+          ?.content?.parts ||
+        [];
 
       const audioPart =
         parts.find(
@@ -381,18 +524,20 @@ app.post(
             part?.inlineData?.data
         );
 
-      if (!audioPart) {
-        console.error(
-          "TTS audio part bulunamadı."
-        );
+      if (
+        !audioPart
+      ) {
 
         throw new Error(
           "Gemini ses verisi döndürmedi."
         );
+
       }
 
       const base64Audio =
-        audioPart.inlineData.data;
+        audioPart
+          .inlineData
+          .data;
 
       const pcmBuffer =
         Buffer.from(
@@ -400,10 +545,14 @@ app.post(
           "base64"
         );
 
-      if (!pcmBuffer.length) {
+      if (
+        !pcmBuffer.length
+      ) {
+
         throw new Error(
           "Gemini boş ses verisi döndürdü."
         );
+
       }
 
       const wavBuffer =
@@ -441,16 +590,30 @@ app.post(
         err
       );
 
-      return res.status(500).json({
-        error:
-          "Ses üretilemedi."
-      });
+      const status =
+        err?.status === 429
+          ? 429
+          : 500;
+
+      return res
+        .status(status)
+        .json({
+
+          error:
+            err?.status === 429
+              ? "Gemini kullanım kotası şu anda dolu."
+              : "Ses üretilemedi."
+
+        });
+
     }
+
   }
 );
 
+
 /* =========================================================
-   TRANSCRIBE
+   AUDIO TRANSCRIPTION
 ========================================================= */
 
 app.post(
@@ -458,28 +621,148 @@ app.post(
   upload.single("audio"),
   async (req, res) => {
 
-    let filePath = null;
+    let filePath =
+      null;
 
     try {
 
-      if (!req.file) {
-        return res.status(400).json({
-          error:
-            "Ses dosyası gelmedi."
-        });
+      if (
+        !req.file
+      ) {
+
+        return res
+          .status(400)
+          .json({
+            error:
+              "Ses dosyası gelmedi."
+          });
+
       }
 
-      filePath = req.file.path;
+      if (
+        !GEMINI_API_KEY
+      ) {
+
+        return res
+          .status(500)
+          .json({
+            error:
+              "GEMINI_API_KEY tanımlı değil."
+          });
+
+      }
+
+      filePath =
+        req.file.path;
+
+      console.log(
+        "Transkripsiyon başlatılıyor..."
+      );
+
+      const audioBuffer =
+        await fs.promises.readFile(
+          filePath
+        );
+
+      if (
+        !audioBuffer.length
+      ) {
+
+        throw new Error(
+          "Ses dosyası boş."
+        );
+
+      }
+
+      const base64Audio =
+        audioBuffer.toString(
+          "base64"
+        );
 
       /*
-       * Bu bölüm, mevcut index.html'nin
-       * kendi ses/yazı sistemini kullanmasına
-       * izin verecek şekilde bırakılmıştır.
+       * MediaRecorder tarafından
+       * oluşturulan kayıt genellikle
+       * WebM/Opus formatındadır.
        */
 
-      return res.status(501).json({
-        error:
-          "Mikrofon özelliği frontend üzerinden yönetiliyor."
+      const mimeType =
+        req.file.mimetype ||
+        "audio/webm";
+
+      const response =
+        await genai.models.generateContent({
+
+          model:
+            AI_MODEL,
+
+          contents: [
+
+            {
+              role:
+                "user",
+
+              parts: [
+
+                {
+                  inlineData: {
+
+                    mimeType,
+
+                    data:
+                      base64Audio
+
+                  }
+
+                },
+
+                {
+                  text:
+                    "Bu ses kaydını Türkçe olarak kelimesi kelimesine yazıya dök. " +
+                    "Konuşmacının söylediği cümleleri mümkün olduğunca doğru koru. " +
+                    "Ek açıklama yapma. Sadece konuşmanın metnini döndür."
+
+                }
+
+              ]
+
+            }
+
+          ],
+
+          config: {
+
+            temperature:
+              0,
+
+            maxOutputTokens:
+              1000
+
+          }
+
+        });
+
+      const text =
+        String(
+          response.text ||
+          ""
+        ).trim();
+
+      if (
+        !text
+      ) {
+
+        throw new Error(
+          "Konuşma metne dönüştürülemedi."
+        );
+
+      }
+
+      console.log(
+        "Transkripsiyon tamamlandı."
+      );
+
+      return res.json({
+        text
       });
 
     } catch (err) {
@@ -489,21 +772,43 @@ app.post(
         err
       );
 
-      return res.status(500).json({
-        error:
-          "Ses çözümlenemedi."
-      });
+      const status =
+        err?.status === 429
+          ? 429
+          : 500;
+
+      return res
+        .status(status)
+        .json({
+
+          error:
+            err?.status === 429
+              ? "Gemini kullanım kotası şu anda dolu."
+              : "Ses çözümlenemedi."
+
+        });
 
     } finally {
 
-      if (filePath) {
+      if (
+        filePath
+      ) {
+
         fs.promises
-          .unlink(filePath)
-          .catch(() => {});
+          .unlink(
+            filePath
+          )
+          .catch(
+            () => {}
+          );
+
       }
+
     }
+
   }
 );
+
 
 /* =========================================================
    FRONTEND
@@ -518,8 +823,10 @@ app.get(
         "index.html"
       )
     );
+
   }
 );
+
 
 /* =========================================================
    SERVER
@@ -540,5 +847,10 @@ app.listen(
     console.log(
       `TTS Model: ${TTS_MODEL}`
     );
+
+    console.log(
+      "Transkripsiyon: AKTIF"
+    );
+
   }
 );
